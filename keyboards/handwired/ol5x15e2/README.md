@@ -1,15 +1,10 @@
 # akb
 
-![Proton C based handwired ]
 
 A Proton C based handwired 75 key keyboard with 2 rotary encoders, I2C OLED, RGBleds, buzzer.
 
 - Keyboard Maintainer: aspotdot
 - Hardware Supported: Proton C handwired
-
-Make example for this keyboard (after setting up your build environment):
-
-    make handwired/akb:default
 
 ## Details
 
