@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include QMK_KEYBOARD_H
 
 #ifdef AUDIO_ENABLE
@@ -60,11 +61,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       KC_BTN2, KC_LCTL, KC_LSFT, KC_BTN3,  KC_ESC,  KC_TAB, KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR, G(KC_SPC), KC_BTN1, DM_PLY1, KC_MNXT, KC_MPLY,
       KC_ENT,     KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_7,    KC_8,    KC_9,    KC_Y,      KC_U,    KC_I,    KC_O,    KC_P, KC_BSLS,
       KC_TAB,     KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_4,    KC_5,    KC_6,    KC_H,      KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,
-      KC_LSPO,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_1,    KC_2,    KC_3,    KC_N,      KC_M, KC_COMM,  KC_DOT, KC_SLSH, KC_RSPC,
+      SC_LCPO,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_1,    KC_2,    KC_3,    KC_N,      KC_M, KC_COMM,  KC_DOT, KC_SLSH, SC_RCPC,
       LCTL_BR, KC_LALT, KC_LGUI, MO(_FN), MO(_MO), KC_BSPC,  OH_KC0,  NM_DOT,  KC_ENT,  KC_SPC,   MO(_MO), MO(_FN), KC_RGUI, KC_RALT, RCTL_BR),
 
     [_FN] = LAYOUT_ortho_5x15(
-      TG(_GM),  WN_MVL,  WN_MVR, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, DM_RSTP, _______,  AU_TOG,
+      TG(_GM),  WN_MVL,  WN_MVR, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, DM_RSTP, _______,  AU_TOGG,
       TG(_CM), WN_SHNK,  WN_MAX,  WN_INC, _______, _______,   KC_F7,   KC_F8,   KC_F9, _______, _______, _______, _______, _______, _______,
       KC_PGUP,    WN_L, WN_SWTC,    WN_R, _______, _______,   KC_F4,   KC_F5,   KC_F6, _______, _______, _______, _______, _______, _______,
       KC_PGDN, _______, _______, XXXXXXX, _______, _______,   KC_F1,   KC_F2,   KC_F3, _______, _______, _______, _______, _______, _______,
@@ -98,7 +99,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       _______, KC_SLSH,  KC_DOT, KC_COMM,    KC_M,    KC_N, _______, _______, _______, _______, _______, _______, _______, _______, _______,
       _______, _______, _______, _______, _______,  KC_SPC, _______, _______, _______, _______, _______, _______, _______, _______, _______),
 
-    [_NM] = LAYOUT_ortho_5x15(3
+    [_NM] = LAYOUT_ortho_5x15(
       _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,  KC_EQL, _______, _______,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,
       _______,  KC_GRV,   KC_LT,   KC_GT, KC_DQUO,  KC_DOT, KC_AMPR, KC_ASTR, KC_LPRN, KC_AMPR, XXXXXXX, KC_LBRC, KC_RBRC, KC_PERC, _______,
       _______, KC_EXLM, KC_MINS, KC_PLUS,  KC_EQL, KC_HASH,  KC_DLR, KC_PERC, KC_CIRC, KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN,   KC_AT, _______,
