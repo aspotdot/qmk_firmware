@@ -1,5 +1,6 @@
 {
     "keyboard_name": "ol5x15e2",
+    "manufacturer": "handwire",
     "url": "",
     "maintainer": "qmk",
     "usb": {
