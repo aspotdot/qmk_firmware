@@ -18,8 +18,6 @@
     "diode_direction": "COL2ROW",
 
     "features": {
-        "encoder": true
-
     },
 
     "encoder": {

@@ -1,11 +1,13 @@
-#include "progmem.h"
 
 // Online editor: https://joric.github.io/qle/
 //                https://helixfonteditor.netlify.app/
 //                https://lospec.com/pixel-editor/app
 //                https://www.pixilart.com/draw?ref=home-page
 
-static const unsigned char font[] PROGMEM = {
+#include "progmem.h"
+
+
+ const unsigned char font[] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x3E, 0x5B, 0x4F, 0x5B, 0x3E, 0x00,
   0x3E, 0x6B, 0x4F, 0x6B, 0x3E, 0x00,
