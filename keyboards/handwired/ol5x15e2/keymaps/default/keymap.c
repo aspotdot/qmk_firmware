@@ -135,9 +135,8 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 #endif
 
 #ifdef OLED_ENABLE
-//oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_0; }
 
-// base icon
+// base icons
  static const char   top[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0};
  static const char  eyes[] = {0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0};
  static const char mouth[] = {0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0};
@@ -221,65 +220,45 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
       oled_set_cursor(11, 2);
       oled_write_char(0x9c, get_mods() & MOD_MASK_CTRL);
     }
+ }
 
-    if(get_current_wpm() < 1) {
-      sleep_timer = timer_read32();
-      if (timer_elapsed32(glitch_timer) > 50) { //rand()%(200-30+1)+30
-        glitch_timer = timer_read32();
-        uint8_t GLpick = rand()%(6-1+1)+1;  //rand() % (ub - lb + 1)) + lb
-          switch (GLpick) {
-            case 1:
-             oled_set_cursor(8,1);
-             oled_write(GLtop,false);
-            break;
-            case 2:
-             oled_set_cursor(8,1);
-             oled_write(top,false);
-            break;
-            case 3:
-             oled_set_cursor(8,2);
-             oled_write(GLeyes,false);
-            break;
-            case 4:
-             oled_set_cursor(8,2);
-             oled_write(eyes,false);
-            break;
-            case 5:
-             oled_set_cursor(8,3);
-             oled_write(GLmouth,false);
-            break;
-            case 6:
-             oled_set_cursor(8,3);
-             oled_write(mouth,false);
-            break;
-            }
-          }
-        }
-  }
 
- static void fade_display(void) {
-         //Define the reader structure
-         oled_buffer_reader_t reader;
-         uint8_t buff_char;
-         if (random() % 30 == 0) {
-             srand(timer_read());
-             // Fetch a pointer for the buffer byte at index 0. The return structure
-             // will have the pointer and the number of bytes remaining from this
-             // index position if we want to perform a sequential read by
-             // incrementing the buffer pointer
-             reader = oled_read_raw(0);
-             //Loop over the remaining buffer and erase pixels as we go
-             for (uint16_t i = 0; i < reader.remaining_element_count; i++) {
-                 //Get the actual byte in the buffer by dereferencing the pointer
-                 buff_char = *reader.current_element;
-                 if (buff_char != 0) {
-                     oled_write_raw_byte(buff_char & single_bit_masks[rand() % 8], i);
-                 }
-                 //increment the pointer to fetch a new byte during the next loop
-                 reader.current_element++;
-               }
+  void screen_save(void) {
+       if (timer_elapsed32(glitch_timer) > 50) { //rand()%(200-30+1)+30
+         glitch_timer = timer_read32();
+
+            char  eyeL = rand() % 223;
+
+         uint8_t GLpick = rand()%(6-1+1)+1;  //rand() % (ub - lb + 1)) + lb
+           switch (GLpick) {
+             case 1:
+              oled_set_cursor(8,1);
+              oled_write(GLtop,false);
+             break;
+             case 2:
+              oled_set_cursor(8,1);
+              oled_write(top,false);
+             break;
+             case 3:
+              oled_set_cursor(8,2);
+              oled_write(eyeL,false);
+             break;
+             case 4:
+              oled_set_cursor(8,2);
+              oled_write(eyes,false);
+             break;
+             case 5:
+              oled_set_cursor(8,3);
+              oled_write(GLmouth,false);
+             break;
+             case 6:
+              oled_set_cursor(8,3);
+              oled_write(mouth,false);
+             break;
              }
            }
+         }
+
 
   bool oled_task_user(void) {
     if(get_current_wpm() != 000) {
@@ -287,7 +266,7 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
         drawscreen();
     } else {
       if (timer_elapsed32(sleep_timer) > 30000) {
-         fade_display();
+         screen_save();
        }
      }
        return false;

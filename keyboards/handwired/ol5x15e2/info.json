@@ -22,8 +22,8 @@
 
     "encoder": {
             "rotary": [
-                { "pin_a": "A6", "pin_b": "A7", "resolution": 2 },
-                { "pin_a": "A8", "pin_b": "A15", "resolution": 2 }
+                { "pin_a": "A6", "pin_b": "A7", "resolution": 4 },
+                { "pin_a": "A8", "pin_b": "A15", "resolution": 4 }
             ]
         },
 
