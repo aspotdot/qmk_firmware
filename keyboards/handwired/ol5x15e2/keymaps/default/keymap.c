@@ -17,6 +17,7 @@
 
 #include QMK_KEYBOARD_H
 
+
 #ifdef AUDIO_ENABLE
   #include "audio.h"
 #endif
@@ -227,7 +228,7 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
        if (timer_elapsed32(glitch_timer) > 50) { //rand()%(200-30+1)+30
          glitch_timer = timer_read32();
 
-            char  eyeL = rand() % 223;
+            //char  eyeL = rand() % 223;
 
          uint8_t GLpick = rand()%(6-1+1)+1;  //rand() % (ub - lb + 1)) + lb
            switch (GLpick) {
@@ -241,7 +242,7 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
              break;
              case 3:
               oled_set_cursor(8,2);
-              oled_write(eyeL,false);
+              //oled_write(eyeL,false);
              break;
              case 4:
               oled_set_cursor(8,2);
