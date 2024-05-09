@@ -24,19 +24,29 @@
 
 // Defines names for use in layer keycodes and the keymap
 enum layer_names {
+    _00,
     _QT,
+    _CM,
+    _CN,
     _FN,
     _MO,
-    _CM,
     _GM,
-    _OH,
     _NM,
 };
 
 
+
 #define LCTL_BR CTL_T(KC_LBRC)
 #define RCTL_BR RCTL_T(KC_RBRC)
-#define FN_ENT  LT(_FN,KC_ENT)
+
+#define S_DOWN  S(KC_DOWN)
+#define SC_DOWN S(C(KC_DOWN))
+#define S_RGHT  S(KC_RGHT)
+#define SC_RGHT S(C(KC_RGHT))
+#define CA_ESC  C(A(KC_DEL))
+
+#define NM_DOT  LT(_NM,KC_PDOT)
+
 #define WN_L    A(G(KC_LEFT))
 #define WN_R    A(G(KC_RGHT))
 #define WN_MAX  LCAG(KC_UP)
@@ -45,60 +55,61 @@ enum layer_names {
 #define WN_INC  A(G(KC_UP))
 #define WN_MVL  C(KC_LEFT)
 #define WN_MVR  C(KC_RGHT)
-#define S_DOWN  S(KC_DOWN)
-#define SC_DOWN S(C(KC_DOWN))
-#define S_RGHT  S(KC_RGHT)
-#define SC_RGHT S(C(KC_RGHT))
-#define CA_ESC  C(A(KC_DEL))
-#define OH_KC0  LT(_OH,KC_0)
-#define NM_DOT  LT(_NM,KC_PDOT)
+
 #define WIN_L   G(KC_LEFT)
 #define WIN_R   G(KC_RIGHT)
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
+    [_00] = LAYOUT_ortho_5x15(
+      KC_BTN2, KC_LCTL, KC_LSFT, KC_BTN3,  KC_ESC,  KC_TAB,    KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR,   KC_PSCR, KC_BTN1, DM_PLY1, KC_MNXT, KC_MPLY,
+      KC_ENT,  _______, _______, _______, _______, _______,       KC_7,    KC_8,    KC_9,    KC_Y,   _______, _______, _______, _______, _______,
+      KC_TAB,  _______, _______, _______, _______, _______,       KC_4,    KC_5,    KC_6,    KC_H,   _______, _______, _______, _______, _______,
+      SC_LSPO, _______, _______, _______, _______, _______,       KC_1,    KC_2,    KC_3,    KC_N,   _______, _______, _______, _______, SC_RSPC,
+      LCTL_BR, KC_LALT, KC_LGUI, MO(_FN), MO(_MO), KC_BSPC, SH_T(KC_0),  NM_DOT,  KC_ENT,  KC_SPC,   MO(_MO), MO(_FN), KC_RGUI, KC_RALT, RCTL_BR),
+
     [_QT] = LAYOUT_ortho_5x15(
-      KC_BTN2, KC_LCTL, KC_LSFT, KC_BTN3,  KC_ESC,  KC_TAB, KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR, G(KC_SPC), KC_BTN1, DM_PLY1, KC_MNXT, KC_MPLY,
-      KC_ENT,     KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_7,    KC_8,    KC_9,    KC_Y,      KC_U,    KC_I,    KC_O,    KC_P, KC_BSLS,
-      KC_TAB,     KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_4,    KC_5,    KC_6,    KC_H,      KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,
-      SC_LSPO,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_1,    KC_2,    KC_3,    KC_N,      KC_M, KC_COMM,  KC_DOT, KC_SLSH, SC_RSPC,
-      LCTL_BR, KC_LALT, KC_LGUI, MO(_FN), MO(_MO), KC_BSPC,  OH_KC0,  NM_DOT,  KC_ENT,  KC_SPC,   MO(_MO), MO(_FN), KC_RGUI, KC_RALT, RCTL_BR),
+      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______,
+      _______,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T, _______, _______, _______,    KC_Y,     KC_U,    KC_I,    KC_O,    KC_P, KC_BSLS,
+      _______,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G, _______, _______, _______,    KC_H,     KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,
+      _______,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B, _______, _______, _______,    KC_N,     KC_M, KC_COMM,  KC_DOT, KC_SLSH, _______,
+      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______, _______, _______, _______),
+
+    [_CM] = LAYOUT_ortho_5x15(
+      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+      _______,    KC_Q,    KC_W,    KC_F,    KC_P,    KC_B, _______, _______, _______,    KC_J,    KC_L,    KC_U,    KC_Y, KC_QUOT, _______,
+      _______,    KC_A,    KC_R,    KC_S,    KC_T,    KC_G, _______, _______, _______,    KC_K,    KC_N,    KC_E,    KC_I,    KC_A, _______,
+      _______,    KC_Z,    KC_X,    KC_C,    KC_D,    KC_V, _______, _______, _______,    KC_M,    KC_H, KC_COMM,  KC_DOT, KC_SLSH, _______,
+      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
+
+    [_CN] = LAYOUT_ortho_5x15(
+      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+      _______,    KC_W,    KC_L,    KC_Y,    KC_P,    KC_B, _______, _______, _______,    KC_Z,    KC_F,    KC_O,    KC_U, KC_SCLN, _______,
+      _______,    KC_C,    KC_R,    KC_S,    KC_T,    KC_G, _______, _______, _______,    KC_M,    KC_N,    KC_E,    KC_I,    KC_O, _______,
+      _______,    KC_Q,    KC_J,    KC_V,    KC_D,    KC_K, _______, _______, _______,    KC_X,    KC_H, KC_COMM,  KC_DOT, KC_SLSH, _______,
+      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
 
     [_FN] = LAYOUT_ortho_5x15(
-      TG(_GM),  WN_MVL,  WN_MVR, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, DM_RSTP, _______,  AU_TOGG,
-      TG(_CM), WN_SHNK,  WN_MAX,  WN_INC, _______, _______,   KC_F7,   KC_F8,   KC_F9, _______, _______, _______, _______, _______, _______,
-      KC_PGUP,    WN_L, WN_SWTC,    WN_R, _______, _______,   KC_F4,   KC_F5,   KC_F6, _______, _______, _______, _______, _______, _______,
-      KC_PGDN, _______, _______, XXXXXXX, _______, _______,   KC_F1,   KC_F2,   KC_F3, _______, _______, _______, _______, _______, _______,
+      TO(_GM),  WN_MVL,  WN_MVR, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, DM_RSTP, _______,  AU_TOGG,
+      _______, WN_SHNK,  WN_MAX,  WN_INC, _______, _______,   KC_F7,   KC_F8,   KC_F9, _______, _______, _______, _______, _______,  TO(_QT),
+      KC_PGUP,    WN_L, WN_SWTC,    WN_R, _______, _______,   KC_F4,   KC_F5,   KC_F6, _______, _______, _______, _______, _______,  TO(_CM),
+      KC_PGDN, _______, _______, XXXXXXX, _______, _______,   KC_F1,   KC_F2,   KC_F3, _______, _______, _______, _______, _______,  TO(_CN),
       _______, XXXXXXX, XXXXXXX, _______, _______,  KC_DEL, XXXXXXX, XXXXXXX, XXXXXXX, KC_UNDS, _______, _______, _______, _______, _______),
 
     [_MO] = LAYOUT_ortho_5x15(
       _______, KC_BTN1,	_______, _______, _______, _______, _______, _______, _______,	_______, _______, KC_BTN1, DM_REC1,	_______,  _______,
-      WIN_L,   WIN_R,   KC_PGDN,   KC_UP, KC_PGUP, _______, _______, KC_UP,   _______,  _______, KC_WH_L, KC_MS_U, KC_WH_R,  KC_WH_U, _______,
+      WIN_L,   WIN_R,   KC_PGDN,   KC_UP, KC_PGUP, _______, _______, KC_UP,   _______,  _______, KC_WH_L, KC_MS_U, KC_WH_R, KC_WH_U, _______,
       _______, _______, KC_LEFT, KC_DOWN, KC_RIGHT, S_RGHT, KC_LEFT, KC_DOWN, KC_RIGHT, _______, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D,  _______,
       _______, _______, SC_DOWN,  S_DOWN, _______, SC_RGHT, _______, _______, _______,  _______, KC_BTN1, XXXXXXX, _______,	_______,  _______,
       _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______, _______, _______,	_______, _______),
 
-    [_CM] = LAYOUT_ortho_5x15(
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-      _______,    KC_Q,    KC_W,    KC_F,    KC_P,    KC_G, _______, _______, _______,    KC_J,    KC_L,    KC_U,    KC_Y, KC_SCLN, _______,
-      _______,    KC_A,    KC_R,    KC_S,    KC_T,    KC_D, _______, _______, _______,    KC_H,    KC_N,    KC_E,    KC_I,    KC_O, _______,
-      _______,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B, _______, _______, _______,    KC_K,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, _______,
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
-
     [_GM] = LAYOUT_ortho_5x15(
-      TO(_QT),    KC_1,    KC_2,    KC_3,    KC_4,    KC_5, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+      TO(_00),    KC_1,    KC_2,    KC_3,    KC_4,    KC_5, _______, _______, _______, _______, _______, _______, _______, _______, _______,
        KC_ESC,    KC_G,    KC_Q,    KC_W,    KC_E,    KC_R, _______, _______, _______, _______, _______, _______, _______, _______, _______,
        KC_TAB,    KC_M,    KC_A,    KC_S,    KC_D,    KC_F, _______, _______, _______, _______, _______, _______, _______, _______, _______,
       KC_LSFT,    KC_I,    KC_Z,    KC_X,    KC_C,    KC_V, _______, _______, _______, _______, _______, _______, _______, _______, _______,
       KC_LCTL,    KC_K, XXXXXXX, XXXXXXX, KC_BTN2,  KC_SPC, _______, _______, _______, _______, _______, _______, _______, _______, _______),
-
-    [_OH] = LAYOUT_ortho_5x15(
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-      KC_BSLS,    KC_P,    KC_O,    KC_I,    KC_U,    KC_Y, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-      KC_QUOT, KC_SCLN,    KC_L,    KC_K,    KC_J,    KC_H, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-      _______, KC_SLSH,  KC_DOT, KC_COMM,    KC_M,    KC_N, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-      _______, _______, _______, _______, _______,  KC_SPC, _______, _______, _______, _______, _______, _______, _______, _______, _______),
 
     [_NM] = LAYOUT_ortho_5x15(
       _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,  KC_EQL, _______, _______,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,
@@ -122,15 +133,52 @@ const key_override_t **key_overrides = (const key_override_t *[]){
   };
 
 
+#ifdef SWAP_HANDS_ENABLE
+
+const keypos_t PROGMEM hand_swap_config[MATRIX_ROWS][MATRIX_COLS] =
+    // The LAYOUT macro could work for this, but it was harder to figure out the
+    // identity using it.
+
+    // This is the identity layout.
+/*
+{
+    { {0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0}, {9, 0}, {10, 0}, {11, 0}, {12, 0}, {13, 0}, {14, 0}, },
+    { {0, 1}, {1, 1}, {2, 1}, {3, 1}, {4, 1}, {5, 1}, {6, 1}, {7, 1}, {8, 1}, {9, 1}, {10, 1}, {11, 1}, {12, 1}, {13, 1}, {14, 1}, },
+    { {0, 2}, {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}, {9, 2}, {10, 2}, {11, 2}, {12, 2}, {13, 2}, {14, 2}, },
+    { {0, 3}, {1, 3}, {2, 3}, {3, 3}, {4, 3}, {5, 3}, {6, 3}, {7, 3}, {8, 3}, {9, 3}, {10, 3}, {11, 3}, {12, 3}, {13, 3}, {14, 3}, },
+    { {0, 4}, {1, 4}, {2, 4}, {3, 4}, {4, 4}, {5, 4}, {6, 4}, {7, 4}, {8, 4}, {9, 4}, {10, 4}, {11, 4}, {12, 4}, {13, 4}, {14, 4}, },
+
+};
+*/
+
+    // This is the mirror, letter keys and space are mirrored
+{
+    // enc      1       2        3        4        5     |        num pad        | 9       10       11       12       13       enc       enc
+    { {0, 0}, {1, 0},  {2, 0},  {3, 0},  {4, 0},  {5, 0}, {6, 0}, {7, 0}, {8, 0}, {9, 0}, {10, 0}, {11, 0}, {12, 0}, {13, 0}, {14, 0} },
+    { {0, 1}, {13, 1}, {12, 1}, {11, 1}, {10, 1}, {9, 1}, {6, 1}, {7, 1}, {8, 1}, {5, 1}, {4, 1},  {3, 1},  {2, 1},  {1, 1},  {14, 1} },
+    { {0, 2}, {13, 2}, {12, 2}, {11, 2}, {10, 2}, {9, 2}, {6, 2}, {7, 2}, {8, 2}, {5, 2}, {4, 2},  {3, 2},  {2, 2},  {1, 2},  {14, 2} },
+    { {0, 3}, {13, 3}, {12, 3}, {11, 3}, {10, 3}, {9, 3}, {6, 3}, {7, 3}, {8, 3}, {5, 3}, {4, 3},  {3, 3},  {2, 3},  {1, 3},  {14, 3} },
+    { {0, 4}, {1, 4},  {2, 4},  {3, 4},  {4, 4},  {5, 4}, {6, 4}, {7, 4}, {8, 4}, {9, 4}, {10, 4}, {11, 4}, {12, 4}, {13, 4}, {14, 4} },
+};
+
+
+#ifdef ENCODER_MAP_ENABLE
+    const uint8_t PROGMEM encoder_hand_swap_config[NUM_ENCODERS] = {0};
+#endif
+
+#endif
+
+
 
 #if defined(ENCODER_MAP_ENABLE)
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
+    [_00] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
     [_QT] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
     [_FN] =  { ENCODER_CCW_CW(KC_RIGHT, KC_LEFT),   ENCODER_CCW_CW(KC_PGUP, KC_PGDN)  },
     [_MO] =  { ENCODER_CCW_CW(KC_WH_D, KC_WH_U),    ENCODER_CCW_CW(KC_WH_R, KC_WH_L)  },
     [_CM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+    [_CN] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
     [_GM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-    [_OH] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
     [_NM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
 };
 #endif
@@ -160,14 +208,41 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 
 
  void drawscreen(void) {
+    switch (get_highest_layer(layer_state)) {
+    case _00:
+      oled_write_P(PSTR("Default\n"), false);
+      break;
+    case _QT:
+      oled_write_P(PSTR("qwerty\n"), false);
+      break;
+    case _CM:
+      oled_write_P(PSTR("colmack\n"), false);
+      break;
+    case _CN:
+      oled_write_P(PSTR("canary\n"), false);
+      break;
+    case _FN:
+      oled_write_P(PSTR("function\n"), false);
+      break;
+    case _MO:
+      oled_write_P(PSTR("move\n"), false);
+      break;
+    case _GM:
+      oled_write_P(PSTR("game\n"), false);
+      break;
+    case _NM:
+      oled_write_P(PSTR("number\n"), false);
+      break;
+    default:
+        oled_write_P(PSTR("**\n"), false);     }
+
+
+
   // draw top
   oled_set_cursor(8,1);
   switch (get_highest_layer(layer_state)) {
     case _MO:
       oled_write(mindblown,false);
-      break;
-    case _OH:
-      oled_write(cat,false);
       break;
     default:
       oled_write(top,false);
@@ -179,18 +254,7 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
       oled_write(pong,false);
       break;
     default:
-      if (get_current_wpm() > 50) {
-        char wpm_str[4];
-        uint8_t n = get_current_wpm();
-        wpm_str[3] = '\0';
-        wpm_str[2] = '0' + n % 10;
-        wpm_str[1] = '0' + (n /= 10) % 10;
-        wpm_str[0] = '0' + n / 10 ;
-        oled_advance_char();
-        oled_write(wpm_str, false);
-       } else {
          oled_write(eyes,false);
-       }
      }
   // draw mouth
   oled_set_cursor(8,3);
@@ -242,7 +306,7 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
              break;
              case 3:
               oled_set_cursor(8,2);
-              //oled_write(eyeL,false);
+              oled_write(GLeyes,false);
              break;
              case 4:
               oled_set_cursor(8,2);
