@@ -1,7 +1,7 @@
 
 /* Copyright 2020 dsanchezseco
  *
- * This program is free software: you can redistribute it and/or modify
+  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
@@ -30,8 +30,8 @@ enum layer_names {
     _CN,
     _FN,
     _MO,
-    _GM,
     _NM,
+    _GM,
 };
 
 
@@ -47,27 +47,28 @@ enum layer_names {
 
 #define NM_DOT  LT(_NM,KC_PDOT)
 
-#define WN_L    A(G(KC_LEFT))
-#define WN_R    A(G(KC_RGHT))
-#define WN_MAX  LCAG(KC_UP)
-#define WN_SWTC LCAG(KC_LEFT)
-#define WN_SHNK A(G(KC_DOWN))
-#define WN_INC  A(G(KC_UP))
-#define WN_MVL  C(KC_LEFT)
-#define WN_MVR  C(KC_RGHT)
-
 #define WIN_L   G(KC_LEFT)
 #define WIN_R   G(KC_RIGHT)
+#define WN_MAX  G(KC_UP)
+#define WN_FLL  G(S(KC_UP))
+#define WN_MON  G(S(KC_LEFT))
+
+
+
+enum custom_keycodes {
+  SELWORD = SAFE_RANGE,
+  SRCHSEL,
+};
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_00] = LAYOUT_ortho_5x15(
-      KC_BTN2, KC_LCTL, KC_LSFT, KC_BTN3,  KC_ESC,  KC_TAB,    KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR,   KC_PSCR, KC_BTN1, DM_PLY1, KC_MNXT, KC_MPLY,
-      KC_ENT,  _______, _______, _______, _______, _______,       KC_7,    KC_8,    KC_9,    KC_Y,   _______, _______, _______, _______, _______,
-      KC_TAB,  _______, _______, _______, _______, _______,       KC_4,    KC_5,    KC_6,    KC_H,   _______, _______, _______, _______, _______,
-      SC_LSPO, _______, _______, _______, _______, _______,       KC_1,    KC_2,    KC_3,    KC_N,   _______, _______, _______, _______, SC_RSPC,
-      LCTL_BR, KC_LALT, KC_LGUI, MO(_FN), MO(_MO), KC_BSPC, SH_T(KC_0),  NM_DOT,  KC_ENT,  KC_SPC,   MO(_MO), MO(_FN), KC_RGUI, KC_RALT, RCTL_BR),
+      KC_BTN2, KC_LCTL, KC_LSFT, KC_BTN3,  KC_ESC,  KC_TAB,    KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR,  KC_PSCR, KC_BTN1, DM_PLY1, KC_MNXT, KC_MPLY,
+      KC_ENT,  _______, _______, _______, _______, _______,      KC_P7,   KC_P8,   KC_P9, _______,  _______, _______, _______, _______, _______,
+      KC_TAB,  _______, _______, _______, _______, _______,      KC_P4,   KC_P5,   KC_P6, _______,  _______, _______, _______, _______, _______,
+      SC_LSPO, _______, _______, _______, _______, _______,      KC_P1,   KC_P2,   KC_P3, _______,  _______, _______, _______, _______, SC_RSPC,
+      LCTL_BR, KC_LALT, KC_LGUI, MO(_FN), MO(_MO), KC_BSPC, SH_T(KC_P0), NM_DOT, KC_PENT,  KC_SPC,  MO(_MO), MO(_FN), KC_RGUI, KC_RALT, RCTL_BR),
 
     [_QT] = LAYOUT_ortho_5x15(
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______,
@@ -86,44 +87,45 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_CN] = LAYOUT_ortho_5x15(
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
       _______,    KC_W,    KC_L,    KC_Y,    KC_P,    KC_B, _______, _______, _______,    KC_Z,    KC_F,    KC_O,    KC_U, KC_SCLN, _______,
-      _______,    KC_C,    KC_R,    KC_S,    KC_T,    KC_G, _______, _______, _______,    KC_M,    KC_N,    KC_E,    KC_I,    KC_O, _______,
+      _______,    KC_C,    KC_R,    KC_S,    KC_T,    KC_G, _______, _______, _______,    KC_M,    KC_N,    KC_E,    KC_I,    KC_A, _______,
       _______,    KC_Q,    KC_J,    KC_V,    KC_D,    KC_K, _______, _______, _______,    KC_X,    KC_H, KC_COMM,  KC_DOT, KC_SLSH, _______,
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
 
     [_FN] = LAYOUT_ortho_5x15(
-      TO(_GM),  WN_MVL,  WN_MVR, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, DM_RSTP, _______,  AU_TOGG,
-      _______, WN_SHNK,  WN_MAX,  WN_INC, _______, _______,   KC_F7,   KC_F8,   KC_F9, _______, _______, _______, _______, _______,  TO(_QT),
-      KC_PGUP,    WN_L, WN_SWTC,    WN_R, _______, _______,   KC_F4,   KC_F5,   KC_F6, _______, _______, _______, _______, _______,  TO(_CM),
-      KC_PGDN, _______, _______, XXXXXXX, _______, _______,   KC_F1,   KC_F2,   KC_F3, _______, _______, _______, _______, _______,  TO(_CN),
-      _______, XXXXXXX, XXXXXXX, _______, _______,  KC_DEL, XXXXXXX, XXXXXXX, XXXXXXX, KC_UNDS, _______, _______, _______, _______, _______),
+      TO(_GM), _______, _______, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, _______, _______,  AU_TOGG,
+      SRCHSEL, _______, _______, _______, _______, _______,   KC_F7,   KC_F8,   KC_F9, _______, _______, _______, _______, _______,  TO(_QT),
+      _______, _______, _______, _______, _______, _______,   KC_F4,   KC_F5,   KC_F6, _______, _______, _______, _______, _______,  TO(_CM),
+      SELWORD, C(KC_X), C(KC_C), C(KC_V), _______, _______,   KC_F1,   KC_F2,   KC_F3, _______, _______, _______, _______, _______,  TO(_CN),
+      _______, _______, _______, _______, _______,  KC_DEL, XXXXXXX, XXXXXXX, XXXXXXX, KC_UNDS, _______, _______, _______, _______, _______),
 
     [_MO] = LAYOUT_ortho_5x15(
-      _______, KC_BTN1,	_______, _______, _______, _______, _______, _______, _______,	_______, _______, KC_BTN1, DM_REC1,	_______,  _______,
-      WIN_L,   WIN_R,   KC_PGDN,   KC_UP, KC_PGUP, _______, _______, KC_UP,   _______,  _______, KC_WH_L, KC_MS_U, KC_WH_R, KC_WH_U, _______,
-      _______, _______, KC_LEFT, KC_DOWN, KC_RIGHT, S_RGHT, KC_LEFT, KC_DOWN, KC_RIGHT, _______, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D,  _______,
-      _______, _______, SC_DOWN,  S_DOWN, _______, SC_RGHT, _______, _______, _______,  _______, KC_BTN1, XXXXXXX, _______,	_______,  _______,
-      _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______, _______, _______,	_______, _______),
+      _______, _______,	_______, KC_BTN1, _______, _______, _______, _______, _______,	_______, _______, KC_BTN1, DM_REC1,	_______,  _______,
+        WIN_L,   WIN_R,   KC_PGDN,   KC_UP, KC_PGUP, _______, _______, KC_UP,   _______,  _______, KC_WH_L, KC_MS_U, KC_WH_R, KC_WH_U,  _______,
+       WN_FLL, _______, KC_LEFT, KC_DOWN, KC_RIGHT, S_RGHT, KC_LEFT, KC_DOWN, KC_RIGHT, _______, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D,  _______,
+       WN_MON, _______, SC_DOWN,  S_DOWN, XXXXXXX, SC_RGHT, _______, _______, _______,  _______, KC_BTN1, XXXXXXX, _______,	_______,  _______,
+      _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______, _______, _______,	_______,  _______),
+
+    [_NM] = LAYOUT_ortho_5x15(
+      _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,  KC_EQL,  KC_NUM, _______,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,
+      _______,  KC_GRV,   KC_LT,   KC_GT, KC_DQUO,  KC_DOT, KC_AMPR, KC_ASTR, KC_LPRN, KC_AMPR, XXXXXXX, KC_LBRC, KC_RBRC, KC_PERC, _______,
+      _______, KC_EXLM, KC_MINS, KC_PLUS,  KC_EQL, KC_HASH,  KC_DLR, KC_PERC, KC_CIRC, KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN,   KC_AT, _______,
+      _______, KC_CIRC, KC_SLSH, KC_ASTR, KC_BSLS, XXXXXXX, KC_EXLM,   KC_AT, KC_HASH, KC_TILD,  KC_DLR, KC_LCBR, KC_RCBR, KC_QUES, _______,
+      _______, _______, _______, _______, _______, _______, KC_RPRN, _______,  KC_EQL, _______, _______, _______, _______, _______, _______),
 
     [_GM] = LAYOUT_ortho_5x15(
       TO(_00),    KC_1,    KC_2,    KC_3,    KC_4,    KC_5, _______, _______, _______, _______, _______, _______, _______, _______, _______,
        KC_ESC,    KC_G,    KC_Q,    KC_W,    KC_E,    KC_R, _______, _______, _______, _______, _______, _______, _______, _______, _______,
        KC_TAB,    KC_M,    KC_A,    KC_S,    KC_D,    KC_F, _______, _______, _______, _______, _______, _______, _______, _______, _______,
       KC_LSFT,    KC_I,    KC_Z,    KC_X,    KC_C,    KC_V, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-      KC_LCTL,    KC_K, XXXXXXX, XXXXXXX, KC_BTN2,  KC_SPC, _______, _______, _______, _______, _______, _______, _______, _______, _______),
+      KC_LCTL,    KC_K, XXXXXXX, XXXXXXX, KC_BTN2,  KC_SPC, _______, _______, _______, _______, _______, _______, _______, _______, _______)
 
-    [_NM] = LAYOUT_ortho_5x15(
-      _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,  KC_EQL, _______, _______,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,
-      _______,  KC_GRV,   KC_LT,   KC_GT, KC_DQUO,  KC_DOT, KC_AMPR, KC_ASTR, KC_LPRN, KC_AMPR, XXXXXXX, KC_LBRC, KC_RBRC, KC_PERC, _______,
-      _______, KC_EXLM, KC_MINS, KC_PLUS,  KC_EQL, KC_HASH,  KC_DLR, KC_PERC, KC_CIRC, KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN,   KC_AT, _______,
-      _______, KC_CIRC, KC_SLSH, KC_ASTR, KC_BSLS, XXXXXXX, KC_EXLM,   KC_AT, KC_HASH, KC_TILD,  KC_DLR, KC_LCBR, KC_RCBR, KC_QUES, _______,
-      _______, _______, _______, _______, _______, _______, KC_RPRN, _______,  KC_EQL, _______, _______, _______, _______, _______, _______)
   };
 
 
 // key overrides
 const key_override_t space_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_SPC, KC_UNDS);
 const key_override_t enter_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_ENT, KC_EQL);
-const key_override_t plus_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_PLUS, KC_EQL);
+const key_override_t plus_key_override =  ko_make_basic(MOD_MASK_SHIFT, KC_PLUS, KC_EQL);
 // This globally defines all key overrides to be used
 const key_override_t **key_overrides = (const key_override_t *[]){
     &space_key_override,
@@ -131,6 +133,28 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     &plus_key_override,
     NULL // Null terminate the array of overrides!
   };
+
+// Macro set up: ref //https://getreuer.info/posts/keyboards/macros/index.html
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+  switch (keycode) {
+    case SELWORD:  // Selects the current word under the cursor.
+        if (record->event.pressed) {
+            SEND_STRING(SS_LCTL(SS_TAP(X_RGHT) SS_LSFT(SS_TAP(X_LEFT))));
+            // Mac users, change LCTL to LALT:
+            // SEND_STRING(SS_LALT(SS_TAP(X_RGHT) SS_LSFT(SS_TAP(X_LEFT))));
+        }
+            return false;
+    case SRCHSEL:  // Searches the current selection in a new tab.
+        if (record->event.pressed) {
+            // Mac users, change LCTL to LGUI.
+            SEND_STRING(SS_LCTL("ct") SS_DELAY(100) SS_LCTL("v") SS_TAP(X_ENTER));
+        }
+            return false;
+    }
+  return true;
+}
+
+
 
 
 #ifdef SWAP_HANDS_ENABLE
@@ -158,7 +182,7 @@ const keypos_t PROGMEM hand_swap_config[MATRIX_ROWS][MATRIX_COLS] =
     { {0, 1}, {13, 1}, {12, 1}, {11, 1}, {10, 1}, {9, 1}, {6, 1}, {7, 1}, {8, 1}, {5, 1}, {4, 1},  {3, 1},  {2, 1},  {1, 1},  {14, 1} },
     { {0, 2}, {13, 2}, {12, 2}, {11, 2}, {10, 2}, {9, 2}, {6, 2}, {7, 2}, {8, 2}, {5, 2}, {4, 2},  {3, 2},  {2, 2},  {1, 2},  {14, 2} },
     { {0, 3}, {13, 3}, {12, 3}, {11, 3}, {10, 3}, {9, 3}, {6, 3}, {7, 3}, {8, 3}, {5, 3}, {4, 3},  {3, 3},  {2, 3},  {1, 3},  {14, 3} },
-    { {0, 4}, {1, 4},  {2, 4},  {3, 4},  {4, 4},  {5, 4}, {6, 4}, {7, 4}, {8, 4}, {9, 4}, {10, 4}, {11, 4}, {12, 4}, {13, 4}, {14, 4} },
+    { {0, 4}, {1, 4},  {2, 4},  {3, 4},  {4, 4},  {9, 4}, {6, 4}, {7, 4}, {8, 4}, {5, 4}, {10, 4}, {11, 4}, {12, 4}, {13, 4}, {14, 4} },
 };
 
 
@@ -204,7 +228,33 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 
  static  uint32_t sleep_timer = 0;
  static  uint32_t glitch_timer = 0;
+
  const uint8_t single_bit_masks[8] = {127, 191, 223, 239, 247, 251, 253, 254}; //Setup some mask which can be or'd with bytes to turn off pixels
+  static void fade_display(void) {
+      //Define the reader structure
+      oled_buffer_reader_t reader;
+      uint8_t buff_char;
+      if (random() % 30 == 0) {
+          srand(timer_read());
+          // Fetch a pointer for the buffer byte at index 0. The return structure
+          // will have the pointer and the number of bytes remaining from this
+          // index position if we want to perform a sequential read by
+          // incrementing the buffer pointer
+          reader = oled_read_raw(0);
+          //Loop over the remaining buffer and erase pixels as we go
+          for (uint16_t i = 0; i < reader.remaining_element_count; i++) {
+              //Get the actual byte in the buffer by dereferencing the pointer
+              buff_char = *reader.current_element;
+              if (buff_char != 0) {
+                  oled_write_raw_byte(buff_char & single_bit_masks[rand() % 8], i);
+              }
+              //increment the pointer to fetch a new byte during the next loop
+              reader.current_element++;
+          }
+      }
+  }
+
+
 
 
  void drawscreen(void) {
@@ -289,10 +339,8 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 
 
   void screen_save(void) {
-       if (timer_elapsed32(glitch_timer) > 50) { //rand()%(200-30+1)+30
+       if (timer_elapsed32(glitch_timer) > 100) { //rand()%(200-30+1)+30
          glitch_timer = timer_read32();
-
-            //char  eyeL = rand() % 223;
 
          uint8_t GLpick = rand()%(6-1+1)+1;  //rand() % (ub - lb + 1)) + lb
            switch (GLpick) {
@@ -329,11 +377,11 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
     if(get_current_wpm() != 000) {
         oled_on(); // not essential but turns on animation OLED with any alpha keypress
         drawscreen();
-    } else {
-      if (timer_elapsed32(sleep_timer) > 30000) {
-         screen_save();
-       }
-     }
+      } else if (timer_elapsed32(sleep_timer) > 30000 && timer_elapsed32(sleep_timer) < 9000) {
+           screen_save();
+      } else {
+         fade_display();
+      }
        return false;
      }
 
