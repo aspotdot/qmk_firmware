@@ -377,7 +377,7 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
     if(get_current_wpm() != 000) {
         oled_on(); // not essential but turns on animation OLED with any alpha keypress
         drawscreen();
-      } else if (timer_elapsed32(sleep_timer) > 30000 && timer_elapsed32(sleep_timer) < 9000) {
+      } else if (timer_elapsed32(sleep_timer) > 30000 && timer_elapsed32(sleep_timer) < 90000) {
            screen_save();
       } else {
          fade_display();
