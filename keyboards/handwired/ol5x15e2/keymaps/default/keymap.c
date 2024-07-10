@@ -58,6 +58,10 @@ enum layer_names {
 enum custom_keycodes {
   SELWORD = SAFE_RANGE,
   SRCHSEL,
+  KY_DEG,
+  KY_DIA,
+  KY_PLMN,
+  JIGGLE,
 };
 
 
@@ -92,7 +96,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
 
     [_FN] = LAYOUT_ortho_5x15(
-      TO(_GM), _______, _______, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, _______, _______,  AU_TOGG,
+      TO(_GM),  JIGGLE, _______, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, _______, _______,  AU_TOGG,
       SRCHSEL, _______, _______, _______, _______, _______,   KC_F7,   KC_F8,   KC_F9, _______, _______, _______, _______, _______,  TO(_QT),
       _______, _______, _______, _______, _______, _______,   KC_F4,   KC_F5,   KC_F6, _______, _______, _______, _______, _______,  TO(_CM),
       SELWORD, C(KC_X), C(KC_C), C(KC_V), _______, _______,   KC_F1,   KC_F2,   KC_F3, _______, _______, _______, _______, _______,  TO(_CN),
@@ -100,14 +104,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_MO] = LAYOUT_ortho_5x15(
       _______, _______,	_______, KC_BTN1, _______, _______, _______, _______, _______,	_______, _______, KC_BTN1, DM_REC1,	_______,  _______,
-        WIN_L,   WIN_R,   KC_PGDN,   KC_UP, KC_PGUP, _______, _______, KC_UP,   _______,  _______, KC_WH_L, KC_MS_U, KC_WH_R, KC_WH_U,  _______,
+        WIN_L,   WIN_R, KC_PGDN,   KC_UP, KC_PGUP, _______, _______,   KC_UP, _______,  _______, KC_WH_L, KC_MS_U, KC_WH_R, KC_WH_U,  _______,
        WN_FLL, _______, KC_LEFT, KC_DOWN, KC_RIGHT, S_RGHT, KC_LEFT, KC_DOWN, KC_RIGHT, _______, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D,  _______,
        WN_MON, _______, SC_DOWN,  S_DOWN, XXXXXXX, SC_RGHT, _______, _______, _______,  _______, KC_BTN1, XXXXXXX, _______,	_______,  _______,
       _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______, _______, _______,	_______,  _______),
 
     [_NM] = LAYOUT_ortho_5x15(
-      _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,  KC_EQL,  KC_NUM, _______,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,
-      _______,  KC_GRV,   KC_LT,   KC_GT, KC_DQUO,  KC_DOT, KC_AMPR, KC_ASTR, KC_LPRN, KC_AMPR, XXXXXXX, KC_LBRC, KC_RBRC, KC_PERC, _______,
+      _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5, KY_PLMN,  KC_NUM,  KY_DEG,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,
+      _______,  KC_GRV,   KC_LT,   KC_GT, KC_DQUO,  KC_DOT, KC_AMPR, KC_ASTR, KC_LPRN, KC_AMPR,  KY_DIA, KC_LBRC, KC_RBRC, KC_PERC, _______,
       _______, KC_EXLM, KC_MINS, KC_PLUS,  KC_EQL, KC_HASH,  KC_DLR, KC_PERC, KC_CIRC, KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN,   KC_AT, _______,
       _______, KC_CIRC, KC_SLSH, KC_ASTR, KC_BSLS, XXXXXXX, KC_EXLM,   KC_AT, KC_HASH, KC_TILD,  KC_DLR, KC_LCBR, KC_RCBR, KC_QUES, _______,
       _______, _______, _______, _______, _______, _______, KC_RPRN, _______,  KC_EQL, _______, _______, _______, _______, _______, _______),
@@ -124,7 +128,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // key overrides
 const key_override_t space_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_SPC, KC_UNDS);
-const key_override_t enter_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_ENT, KC_EQL);
+const key_override_t enter_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_PENT, KC_EQL);
 const key_override_t plus_key_override =  ko_make_basic(MOD_MASK_SHIFT, KC_PLUS, KC_EQL);
 // This globally defines all key overrides to be used
 const key_override_t **key_overrides = (const key_override_t *[]){
@@ -133,6 +137,24 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     &plus_key_override,
     NULL // Null terminate the array of overrides!
   };
+
+// Mouse jiggler: add JIGGLE macro and keycode
+// https://www.reddit.com/r/olkb/comments/t4imri/comment/hz2w67i/?context=3
+bool mouse_jiggler_enabled = false;
+static uint16_t mouse_jiggler_timer;
+
+bool has_mouse_report_changed(report_mouse_t* new_report, report_mouse_t* old_report) {
+  // Only report every 5 seconds.
+  if (mouse_jiggler_enabled && timer_elapsed(mouse_jiggler_timer) > 5000) {
+    mouse_jiggler_timer = timer_read();
+    return mouse_jiggler_enabled;
+  }
+  return memcmp(new_report, old_report, sizeof(report_mouse_t));
+}
+void mouse_jiggle_toggle(void) {
+  mouse_jiggler_timer = timer_read();
+  mouse_jiggler_enabled = ! mouse_jiggler_enabled;
+}
 
 // Macro set up: ref //https://getreuer.info/posts/keyboards/macros/index.html
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
@@ -150,9 +172,33 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             SEND_STRING(SS_LCTL("ct") SS_DELAY(100) SS_LCTL("v") SS_TAP(X_ENTER));
         }
             return false;
+    case KY_DEG:  // Searches the current selection in a new tab.
+        if (record->event.pressed) {
+            // Mac users, change LCTL to LGUI.
+            SEND_STRING(SS_LALT(SS_TAP(X_KP_0) SS_TAP(X_KP_1) SS_TAP(X_KP_7) SS_TAP(X_KP_6)));
+        }
+            return false;
+    case KY_PLMN:  // Searches the current selection in a new tab.
+        if (record->event.pressed) {
+            // Mac users, change LCTL to LGUI.
+            SEND_STRING(SS_LALT(SS_TAP(X_KP_0) SS_TAP(X_KP_1) SS_TAP(X_KP_7) SS_TAP(X_KP_7)));
+        }
+            return false;
+    case KY_DIA:  // Searches the current selection in a new tab.
+        if (record->event.pressed) {
+            // Mac users, change LCTL to LGUI.
+            SEND_STRING(SS_LALT(SS_TAP(X_KP_0) SS_TAP(X_KP_2) SS_TAP(X_KP_4) SS_TAP(X_KP_8)));
+        }
+            return false;
+    case JIGGLE:
+          mouse_jiggle_toggle();
+          return false;
+
     }
   return true;
 }
+
+
 
 
 
