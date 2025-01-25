@@ -1,6 +1,6 @@
 
 
-A ProMicro powered handwired macro pad with rotary encoder set up to pair with a 3d Spacemouse.
+A ProMicro powered handwired macro pad with rotary encoder made to pair with a 3d Spacemouse.
 The macro pad sits around the spacemouse to provided additional buttons and number pad. 
 
 - Keyboard Maintainer: aspotdot

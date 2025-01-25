@@ -1,7 +1,5 @@
-
-/* Copyright 2020 dsanchezseco
- *
-  * This program is free software: you can redistribute it and/or modify
+/*
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
@@ -13,6 +11,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+qmk lint -kb handwired/ol5x15e2
+qmk compile -kb handwired/ol5x15e2 -km default
  */
 
 #include QMK_KEYBOARD_H
@@ -96,7 +97,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
 
     [_FN] = LAYOUT_ortho_5x15(
-      TO(_GM),  JIGGLE, _______, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, _______, _______,  AU_TOGG,
+      TO(_GM), JIGGLE, _______, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, _______, _______,  AU_TOGG,
       SRCHSEL, _______, _______, _______, _______, _______,   KC_F7,   KC_F8,   KC_F9, _______, _______, _______, _______, _______,  TO(_QT),
       _______, _______, _______, _______, _______, _______,   KC_F4,   KC_F5,   KC_F6, _______, _______, _______, _______, _______,  TO(_CM),
       SELWORD, C(KC_X), C(KC_C), C(KC_V), _______, _______,   KC_F1,   KC_F2,   KC_F3, _______, _______, _______, _______, _______,  TO(_CN),
@@ -126,7 +127,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   };
 
 
+/*
 // key overrides
+#ifdef KEY_OVERRIDE_ENABLE
 const key_override_t space_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_SPC, KC_UNDS);
 const key_override_t enter_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_PENT, KC_EQL);
 const key_override_t plus_key_override =  ko_make_basic(MOD_MASK_SHIFT, KC_PLUS, KC_EQL);
@@ -137,6 +140,10 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     &plus_key_override,
     NULL // Null terminate the array of overrides!
   };
+#endif
+*/
+
+
 
 // Mouse jiggler: add JIGGLE macro and keycode
 // https://www.reddit.com/r/olkb/comments/t4imri/comment/hz2w67i/?context=3
@@ -190,9 +197,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             SEND_STRING(SS_LALT(SS_TAP(X_KP_0) SS_TAP(X_KP_2) SS_TAP(X_KP_4) SS_TAP(X_KP_8)));
         }
             return false;
-    case JIGGLE:
-          mouse_jiggle_toggle();
-          return false;
+//    case JIGGLE:
+//          mouse_jiggle_toggle();
+//          return false;
 
     }
   return true;
@@ -433,11 +440,4 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 
 
 #endif  //end oled
-
-
-
-
-
-
-
 

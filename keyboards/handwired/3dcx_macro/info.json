@@ -1,0 +1,15 @@
+{
+    "maintainer": "aspotdot",
+    "manufacturer": "handwire",
+    "url": "https://github.com/aspotdot/qmk_firmware",
+
+    "usb": {
+        "vid": "0xFEED",
+        "pid": "0x0000",
+        "device_version": "0.0.1"
+    },
+
+    "development_board": "promicro",
+    "processor": "atmega32u4",
+    "bootloader": "caterina"
+}
