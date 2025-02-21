@@ -14,6 +14,8 @@
 
 qmk lint -kb handwired/ol5x15e2
 qmk compile -kb handwired/ol5x15e2 -km default
+qmk flash -kb handwired/ol5x15e2 -km default
+
  */
 
 #include QMK_KEYBOARD_H
@@ -40,12 +42,16 @@ enum layer_names {
 #define LCTL_BR CTL_T(KC_LBRC)
 #define RCTL_BR RCTL_T(KC_RBRC)
 
+#define S_UP  S(KC_UP)
+#define SC_UP S(C(KC_UP))
 #define S_DOWN  S(KC_DOWN)
 #define SC_DOWN S(C(KC_DOWN))
 #define S_RGHT  S(KC_RGHT)
 #define SC_RGHT S(C(KC_RGHT))
-#define CA_ESC  C(A(KC_DEL))
+#define S_LEFT  S(KC_LEFT)
+#define SC_LEFT S(C(KC_LEFT))
 
+#define CA_ESC  C(A(KC_DEL))
 #define NM_DOT  LT(_NM,KC_PDOT)
 
 #define WIN_L   G(KC_LEFT)
@@ -62,18 +68,41 @@ enum custom_keycodes {
   KY_DEG,
   KY_DIA,
   KY_PLMN,
-  JIGGLE,
+  KY_XLSL,
+  JIGGLE
 };
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_00] = LAYOUT_ortho_5x15(
-      KC_BTN2, KC_LCTL, KC_LSFT, KC_BTN3,  KC_ESC,  KC_TAB,    KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR,  KC_PSCR, KC_BTN1, DM_PLY1, KC_MNXT, KC_MPLY,
-      KC_ENT,  _______, _______, _______, _______, _______,      KC_P7,   KC_P8,   KC_P9, _______,  _______, _______, _______, _______, _______,
-      KC_TAB,  _______, _______, _______, _______, _______,      KC_P4,   KC_P5,   KC_P6, _______,  _______, _______, _______, _______, _______,
-      SC_LSPO, _______, _______, _______, _______, _______,      KC_P1,   KC_P2,   KC_P3, _______,  _______, _______, _______, _______, SC_RSPC,
-      LCTL_BR, KC_LALT, KC_LGUI, MO(_FN), MO(_MO), KC_BSPC, SH_T(KC_P0), NM_DOT, KC_PENT,  KC_SPC,  MO(_MO), MO(_FN), KC_RGUI, KC_RALT, RCTL_BR),
+      KC_BTN2, KC_LCTL, KC_LSFT, KC_BTN3,  KC_ESC,  KC_TAB,     KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR,  KC_PSCR, KC_BTN1, DM_PLY1, KC_MNXT, KC_MPLY,
+      KC_ENT,  _______, _______, _______, _______, _______,       KC_P7,   KC_P8,   KC_P9, _______,  _______, _______, _______, _______, _______,
+      KC_TAB,  _______, _______, _______, _______, _______,       KC_P4,   KC_P5,   KC_P6, _______,  _______, _______, _______, _______, _______,
+      SC_LSPO, _______, _______, _______, _______, _______,       KC_P1,   KC_P2,   KC_P3, _______,  _______, _______, _______, _______, SC_RSPC,
+      LCTL_BR, KC_LALT, KC_LGUI, MO(_FN), MO(_MO), KC_BSPC, SH_T(KC_P0),  NM_DOT, KC_PENT,  KC_SPC,  MO(_MO), MO(_FN), KC_RGUI, KC_RALT, RCTL_BR),
+
+
+    [_FN] = LAYOUT_ortho_5x15(
+      TO(_GM), JIGGLE,  _______, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, _______, _______,  AU_TOGG,
+      SRCHSEL, _______, _______, _______, _______, _______,   KC_F7,   KC_F8,   KC_F9, _______, _______, _______, _______, _______,  TO(_QT),
+      _______, _______, _______, _______, _______, _______,   KC_F4,   KC_F5,   KC_F6, _______, _______, _______, _______, _______,  TO(_CM),
+      SELWORD, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), _______,   KC_F1,   KC_F2,   KC_F3, _______, _______, _______, _______, _______,  TO(_CN),
+      _______, _______, _______, XXXXXXX, _______,  KC_DEL, _______, _______, _______, KC_UNDS, _______, XXXXXXX, _______, _______, _______),
+
+    [_MO] = LAYOUT_ortho_5x15(
+      _______, _______,	_______, KC_BTN1,  _______, _______, _______,   SC_UP,  _______, _______, _______, KC_BTN1, DM_REC1, _______,  _______,
+        WIN_L,   WIN_R, KC_PGDN,   KC_UP,  KC_PGUP, _______, KC_PGDN,   KC_UP,  KC_PGUP, _______, KC_WH_L, KC_MS_U, KC_WH_R, KC_WH_U,  _______,
+       WN_FLL,  WN_MON, KC_LEFT, KC_DOWN, KC_RIGHT,  S_RGHT, KC_LEFT, KC_DOWN, KC_RIGHT, _______, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D,  _______,
+      _______, _______, KY_XLSL,  S_DOWN,  _______, SC_RGHT,  S_LEFT,  S_DOWN,   S_RGHT, _______, KC_BTN1, _______, _______, _______,  _______,
+      _______, _______, _______, SC_DOWN,  XXXXXXX, _______, SC_LEFT, SC_DOWN,  SC_RGHT, _______, XXXXXXX, _______, _______, _______,  _______),
+
+    [_NM] = LAYOUT_ortho_5x15(
+      _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5, KY_PLMN,  KC_NUM,  KY_DEG,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,
+      _______,  KC_GRV,   KC_LT,   KC_GT, KC_DQUO,  KC_DOT, KC_AMPR, KC_ASTR, KC_LPRN, KC_AMPR,  KY_DIA, KC_LBRC, KC_RBRC, KC_PERC, _______,
+      _______, KC_EXLM, KC_MINS, KC_PLUS,  KC_EQL, KC_HASH,  KC_DLR, KC_PERC, KC_CIRC, KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN,   KC_AT, _______,
+      _______, KC_CIRC, KC_SLSH, KC_ASTR, KC_BSLS, _______, KC_EXLM,   KC_AT, KC_HASH, KC_TILD,  KC_DLR, KC_LCBR, KC_RCBR, KC_QUES, _______,
+      _______, _______, _______, _______, _______, _______, KC_RPRN,  XXXXXXX,  KC_EQL, _______, _______, _______, _______, _______, _______),
 
     [_QT] = LAYOUT_ortho_5x15(
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______,
@@ -96,27 +125,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       _______,    KC_Q,    KC_J,    KC_V,    KC_D,    KC_K, _______, _______, _______,    KC_X,    KC_H, KC_COMM,  KC_DOT, KC_SLSH, _______,
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
 
-    [_FN] = LAYOUT_ortho_5x15(
-      TO(_GM), JIGGLE, _______, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, _______, _______,  AU_TOGG,
-      SRCHSEL, _______, _______, _______, _______, _______,   KC_F7,   KC_F8,   KC_F9, _______, _______, _______, _______, _______,  TO(_QT),
-      _______, _______, _______, _______, _______, _______,   KC_F4,   KC_F5,   KC_F6, _______, _______, _______, _______, _______,  TO(_CM),
-      SELWORD, C(KC_X), C(KC_C), C(KC_V), _______, _______,   KC_F1,   KC_F2,   KC_F3, _______, _______, _______, _______, _______,  TO(_CN),
-      _______, _______, _______, _______, _______,  KC_DEL, XXXXXXX, XXXXXXX, XXXXXXX, KC_UNDS, _______, _______, _______, _______, _______),
-
-    [_MO] = LAYOUT_ortho_5x15(
-      _______, _______,	_______, KC_BTN1, _______, _______, _______, _______, _______,	_______, _______, KC_BTN1, DM_REC1,	_______,  _______,
-        WIN_L,   WIN_R, KC_PGDN,   KC_UP, KC_PGUP, _______, _______,   KC_UP, _______,  _______, KC_WH_L, KC_MS_U, KC_WH_R, KC_WH_U,  _______,
-       WN_FLL, _______, KC_LEFT, KC_DOWN, KC_RIGHT, S_RGHT, KC_LEFT, KC_DOWN, KC_RIGHT, _______, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D,  _______,
-       WN_MON, _______, SC_DOWN,  S_DOWN, XXXXXXX, SC_RGHT, _______, _______, _______,  _______, KC_BTN1, XXXXXXX, _______,	_______,  _______,
-      _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______, _______, _______,	_______,  _______),
-
-    [_NM] = LAYOUT_ortho_5x15(
-      _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5, KY_PLMN,  KC_NUM,  KY_DEG,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,
-      _______,  KC_GRV,   KC_LT,   KC_GT, KC_DQUO,  KC_DOT, KC_AMPR, KC_ASTR, KC_LPRN, KC_AMPR,  KY_DIA, KC_LBRC, KC_RBRC, KC_PERC, _______,
-      _______, KC_EXLM, KC_MINS, KC_PLUS,  KC_EQL, KC_HASH,  KC_DLR, KC_PERC, KC_CIRC, KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN,   KC_AT, _______,
-      _______, KC_CIRC, KC_SLSH, KC_ASTR, KC_BSLS, XXXXXXX, KC_EXLM,   KC_AT, KC_HASH, KC_TILD,  KC_DLR, KC_LCBR, KC_RCBR, KC_QUES, _______,
-      _______, _______, _______, _______, _______, _______, KC_RPRN, _______,  KC_EQL, _______, _______, _______, _______, _______, _______),
-
     [_GM] = LAYOUT_ortho_5x15(
       TO(_00),    KC_1,    KC_2,    KC_3,    KC_4,    KC_5, _______, _______, _______, _______, _______, _______, _______, _______, _______,
        KC_ESC,    KC_G,    KC_Q,    KC_W,    KC_E,    KC_R,   KC_P7,   KC_P8,   KC_P9, _______, _______, _______, _______, _______, _______,
@@ -127,41 +135,51 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   };
 
 
-/*
-// key overrides
-#ifdef KEY_OVERRIDE_ENABLE
-const key_override_t space_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_SPC, KC_UNDS);
-const key_override_t enter_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_PENT, KC_EQL);
-const key_override_t plus_key_override =  ko_make_basic(MOD_MASK_SHIFT, KC_PLUS, KC_EQL);
-// This globally defines all key overrides to be used
-const key_override_t **key_overrides = (const key_override_t *[]){
-    &space_key_override,
-    &enter_key_override,
-    &plus_key_override,
-    NULL // Null terminate the array of overrides!
-  };
-#endif
-*/
+#ifdef COMBO_ENABLE
+    const uint16_t PROGMEM cmb_up[] = {KC_UP,  KC_PGUP, COMBO_END};
+    const uint16_t PROGMEM cmb_dn[] = {KC_UP,  KC_PGDN, COMBO_END};
+    const uint16_t PROGMEM cmb_ar[] = {KC_PENT, KC_SPC, COMBO_END};
 
+    combo_t key_combos[] = {
+        COMBO(cmb_up, KC_HOME),
+        COMBO(cmb_dn, KC_END),
+        COMBO(cmb_ar, QK_AREP)
+
+    };
+#endif
+
+#ifdef KEY_OVERRIDE_ENABLE
+    const key_override_t space_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_SPC, KC_UNDS);
+    const key_override_t enter_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_PENT, KC_EQL);
+    const key_override_t plus_key_override =  ko_make_basic(MOD_MASK_SHIFT, KC_PLUS, KC_EQL);
+    const key_override_t delete_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL);
+
+    const key_override_t *key_overrides[] = {
+        &space_key_override,
+        &enter_key_override,
+        &plus_key_override,
+        &delete_key_override
+    };
+#endif
 
 
 // Mouse jiggler: add JIGGLE macro and keycode
-// https://www.reddit.com/r/olkb/comments/t4imri/comment/hz2w67i/?context=3
-bool mouse_jiggler_enabled = false;
-static uint16_t mouse_jiggler_timer;
+    // https://www.reddit.com/r/olkb/comments/t4imri/comment/hz2w67i/?context=3
+    bool mouse_jiggler_enabled = false;
+    static uint16_t mouse_jiggler_timer;
 
-bool has_mouse_report_changed(report_mouse_t* new_report, report_mouse_t* old_report) {
-  // Only report every 5 seconds.
-  if (mouse_jiggler_enabled && timer_elapsed(mouse_jiggler_timer) > 5000) {
+    bool has_mouse_report_changed(report_mouse_t* new_report, report_mouse_t* old_report) {
+    // Only report every 5 seconds.
+    if (mouse_jiggler_enabled && timer_elapsed(mouse_jiggler_timer) > 5000) {
+        mouse_jiggler_timer = timer_read();
+        return mouse_jiggler_enabled;
+    }
+    return memcmp(new_report, old_report, sizeof(report_mouse_t));
+    }
+    void mouse_jiggle_toggle(void) {
     mouse_jiggler_timer = timer_read();
-    return mouse_jiggler_enabled;
-  }
-  return memcmp(new_report, old_report, sizeof(report_mouse_t));
-}
-void mouse_jiggle_toggle(void) {
-  mouse_jiggler_timer = timer_read();
-  mouse_jiggler_enabled = ! mouse_jiggler_enabled;
-}
+    mouse_jiggler_enabled = ! mouse_jiggler_enabled;
+    }
 
 // Macro set up: ref //https://getreuer.info/posts/keyboards/macros/index.html
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
@@ -169,110 +187,73 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     case SELWORD:  // Selects the current word under the cursor.
         if (record->event.pressed) {
             SEND_STRING(SS_LCTL(SS_TAP(X_RGHT) SS_LSFT(SS_TAP(X_LEFT))));
-            // Mac users, change LCTL to LALT:
-            // SEND_STRING(SS_LALT(SS_TAP(X_RGHT) SS_LSFT(SS_TAP(X_LEFT))));
         }
             return false;
     case SRCHSEL:  // Searches the current selection in a new tab.
         if (record->event.pressed) {
-            // Mac users, change LCTL to LGUI.
             SEND_STRING(SS_LCTL("ct") SS_DELAY(100) SS_LCTL("v") SS_TAP(X_ENTER));
         }
             return false;
-    case KY_DEG:  // Searches the current selection in a new tab.
+    case KY_DEG:  // types degree.
         if (record->event.pressed) {
-            // Mac users, change LCTL to LGUI.
             SEND_STRING(SS_LALT(SS_TAP(X_KP_0) SS_TAP(X_KP_1) SS_TAP(X_KP_7) SS_TAP(X_KP_6)));
         }
             return false;
-    case KY_PLMN:  // Searches the current selection in a new tab.
+    case KY_PLMN:  // types plus minus .
         if (record->event.pressed) {
-            // Mac users, change LCTL to LGUI.
             SEND_STRING(SS_LALT(SS_TAP(X_KP_0) SS_TAP(X_KP_1) SS_TAP(X_KP_7) SS_TAP(X_KP_7)));
         }
             return false;
-    case KY_DIA:  // Searches the current selection in a new tab.
+    case KY_DIA:  // diameter.
         if (record->event.pressed) {
-            // Mac users, change LCTL to LGUI.
             SEND_STRING(SS_LALT(SS_TAP(X_KP_0) SS_TAP(X_KP_2) SS_TAP(X_KP_4) SS_TAP(X_KP_8)));
         }
             return false;
-//    case JIGGLE:
-//          mouse_jiggle_toggle();
-//          return false;
+    case KY_XLSL:  // Select range in XL.
+        if (record->event.pressed) {
+            SEND_STRING(SS_LCTL(SS_TAP(X_UP) SS_TAP(X_LEFT)) SS_LSFT(SS_LCTL(SS_TAP(X_DOWN) SS_TAP(X_RIGHT))));
+        }
+            return false;
 
+    case JIGGLE:
+          mouse_jiggle_toggle();
+          return false;
     }
   return true;
 }
-
-
-
-
-
-
-#ifdef SWAP_HANDS_ENABLE
-
-const keypos_t PROGMEM hand_swap_config[MATRIX_ROWS][MATRIX_COLS] =
-    // The LAYOUT macro could work for this, but it was harder to figure out the
-    // identity using it.
-
-    // This is the identity layout.
-/*
-{
-    { {0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0}, {9, 0}, {10, 0}, {11, 0}, {12, 0}, {13, 0}, {14, 0}, },
-    { {0, 1}, {1, 1}, {2, 1}, {3, 1}, {4, 1}, {5, 1}, {6, 1}, {7, 1}, {8, 1}, {9, 1}, {10, 1}, {11, 1}, {12, 1}, {13, 1}, {14, 1}, },
-    { {0, 2}, {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}, {9, 2}, {10, 2}, {11, 2}, {12, 2}, {13, 2}, {14, 2}, },
-    { {0, 3}, {1, 3}, {2, 3}, {3, 3}, {4, 3}, {5, 3}, {6, 3}, {7, 3}, {8, 3}, {9, 3}, {10, 3}, {11, 3}, {12, 3}, {13, 3}, {14, 3}, },
-    { {0, 4}, {1, 4}, {2, 4}, {3, 4}, {4, 4}, {5, 4}, {6, 4}, {7, 4}, {8, 4}, {9, 4}, {10, 4}, {11, 4}, {12, 4}, {13, 4}, {14, 4}, },
-
-};
-*/
-
-    // This is the mirror, letter keys and space are mirrored
-{
-    // enc      1       2        3        4        5     |        num pad        | 9       10       11       12       13       enc       enc
-    { {0, 0}, {1, 0},  {2, 0},  {3, 0},  {4, 0},  {5, 0}, {6, 0}, {7, 0}, {8, 0}, {9, 0}, {10, 0}, {11, 0}, {12, 0}, {13, 0}, {14, 0} },
-    { {0, 1}, {13, 1}, {12, 1}, {11, 1}, {10, 1}, {9, 1}, {6, 1}, {7, 1}, {8, 1}, {5, 1}, {4, 1},  {3, 1},  {2, 1},  {1, 1},  {14, 1} },
-    { {0, 2}, {13, 2}, {12, 2}, {11, 2}, {10, 2}, {9, 2}, {6, 2}, {7, 2}, {8, 2}, {5, 2}, {4, 2},  {3, 2},  {2, 2},  {1, 2},  {14, 2} },
-    { {0, 3}, {13, 3}, {12, 3}, {11, 3}, {10, 3}, {9, 3}, {6, 3}, {7, 3}, {8, 3}, {5, 3}, {4, 3},  {3, 3},  {2, 3},  {1, 3},  {14, 3} },
-    { {0, 4}, {1, 4},  {2, 4},  {3, 4},  {4, 4},  {9, 4}, {6, 4}, {7, 4}, {8, 4}, {5, 4}, {10, 4}, {11, 4}, {12, 4}, {13, 4}, {14, 4} },
-};
 
 
 #ifdef ENCODER_MAP_ENABLE
     const uint8_t PROGMEM encoder_hand_swap_config[NUM_ENCODERS] = {0};
 #endif
 
-#endif
-
-
 
 #if defined(ENCODER_MAP_ENABLE)
-const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
-    [_00] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-    [_QT] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-    [_FN] =  { ENCODER_CCW_CW(KC_RIGHT, KC_LEFT),   ENCODER_CCW_CW(KC_PGUP, KC_PGDN)  },
-    [_MO] =  { ENCODER_CCW_CW(KC_WH_D, KC_WH_U),    ENCODER_CCW_CW(KC_WH_R, KC_WH_L)  },
-    [_CM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-    [_CN] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-    [_GM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-    [_NM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-};
+    const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
+        [_00] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+        [_QT] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+        [_FN] =  { ENCODER_CCW_CW(KC_RIGHT, KC_LEFT),   ENCODER_CCW_CW(KC_PGUP, KC_PGDN)  },
+        [_MO] =  { ENCODER_CCW_CW(KC_WH_D, KC_WH_U),    ENCODER_CCW_CW(KC_WH_R, KC_WH_L)  },
+        [_CM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+        [_CN] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+        [_GM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+        [_NM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+    };
 #endif
 
 #ifdef OLED_ENABLE
 
-// base icons
- static const char   top[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0};
- static const char  eyes[] = {0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0};
- static const char mouth[] = {0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0};
+    // base icons
+    static const char   top[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0};
+    static const char  eyes[] = {0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0};
+    static const char mouth[] = {0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0};
 
- static const char   GLtop[] = {0x94, 0x95, 0x96, 0x97, 0x98, 0};
- static const char  GLeyes[] = {0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0};
- static const char GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
+    static const char   GLtop[] = {0x94, 0x95, 0x96, 0x97, 0x98, 0};
+    static const char  GLeyes[] = {0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0};
+    static const char GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
 
 
-// icon options
+    // icon options
  static const char mindblown[] = {0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0}; // top
  static const char       cat[] = {0x85, 0x86, 0x87, 0x88, 0x89, 0}; // top
  static const char      pong[] = {0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0}; // eyes
@@ -306,8 +287,6 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
           }
       }
   }
-
-
 
 
  void drawscreen(void) {
@@ -441,3 +420,32 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 
 #endif  //end oled
 
+
+#ifdef SWAP_HANDS_ENABLE
+    const keypos_t PROGMEM hand_swap_config[MATRIX_ROWS][MATRIX_COLS] =
+        // The LAYOUT macro could work for this, but it was harder to figure out the
+        // identity using it.
+
+        // This is the identity layout.
+    /*
+    {
+        { {0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0}, {9, 0}, {10, 0}, {11, 0}, {12, 0}, {13, 0}, {14, 0}, },
+        { {0, 1}, {1, 1}, {2, 1}, {3, 1}, {4, 1}, {5, 1}, {6, 1}, {7, 1}, {8, 1}, {9, 1}, {10, 1}, {11, 1}, {12, 1}, {13, 1}, {14, 1}, },
+        { {0, 2}, {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}, {9, 2}, {10, 2}, {11, 2}, {12, 2}, {13, 2}, {14, 2}, },
+        { {0, 3}, {1, 3}, {2, 3}, {3, 3}, {4, 3}, {5, 3}, {6, 3}, {7, 3}, {8, 3}, {9, 3}, {10, 3}, {11, 3}, {12, 3}, {13, 3}, {14, 3}, },
+        { {0, 4}, {1, 4}, {2, 4}, {3, 4}, {4, 4}, {5, 4}, {6, 4}, {7, 4}, {8, 4}, {9, 4}, {10, 4}, {11, 4}, {12, 4}, {13, 4}, {14, 4}, },
+
+    };
+    */
+
+        // This is the mirror, letter keys and space are mirrored
+    {
+        // enc      1       2        3        4        5     |        num pad        | 9       10       11       12       13       enc       enc
+        { {0, 0}, {1, 0},  {2, 0},  {3, 0},  {4, 0},  {5, 0}, {6, 0}, {7, 0}, {8, 0}, {9, 0}, {10, 0}, {11, 0}, {12, 0}, {13, 0}, {14, 0} },
+        { {0, 1}, {13, 1}, {12, 1}, {11, 1}, {10, 1}, {9, 1}, {6, 1}, {7, 1}, {8, 1}, {5, 1}, {4, 1},  {3, 1},  {2, 1},  {1, 1},  {14, 1} },
+        { {0, 2}, {13, 2}, {12, 2}, {11, 2}, {10, 2}, {9, 2}, {6, 2}, {7, 2}, {8, 2}, {5, 2}, {4, 2},  {3, 2},  {2, 2},  {1, 2},  {14, 2} },
+        { {0, 3}, {13, 3}, {12, 3}, {11, 3}, {10, 3}, {9, 3}, {6, 3}, {7, 3}, {8, 3}, {5, 3}, {4, 3},  {3, 3},  {2, 3},  {1, 3},  {14, 3} },
+        { {0, 4}, {1, 4},  {2, 4},  {3, 4},  {4, 4},  {9, 4}, {6, 4}, {7, 4}, {8, 4}, {5, 4}, {10, 4}, {11, 4}, {12, 4}, {13, 4}, {14, 4} },
+    };
+
+#endif
