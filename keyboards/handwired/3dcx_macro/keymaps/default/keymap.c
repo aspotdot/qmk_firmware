@@ -68,10 +68,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
     [_00] = LAYOUT_ortho_5x6(
     KC_TAB, KC_HOME, KC_DEL, KC_ESC,  XXXXXXX, KC_TAB,
-    KC_P7,  KC_P8,   KC_P9,  KC_SLSH, KC_BTN2, KC_BTN2,
+    KC_P7,  KC_P8,   KC_P9,  KC_SLSH, MS_BTN2, MS_BTN2,
     KC_P4,  KC_P5,   KC_P6,  KC_ASTR, MO(_XL), KC_LSFT,
-    KC_P1,  KC_P2,   KC_P3,  KC_PLUS, KC_BTN1, KC_LCTL,
-    KC_P0,  KC_PDOT, ENT_FN, SPC_MO,  KC_S,    KC_BTN3
+    KC_P1,  KC_P2,   KC_P3,  KC_PLUS, MS_BTN1, KC_LCTL,
+    KC_P0,  KC_PDOT, ENT_FN, SPC_MO,  KC_S,    MS_BTN3
     ),
 
     [_MO] = LAYOUT_ortho_5x6(
@@ -92,10 +92,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_XL] = LAYOUT_ortho_5x6(
     _______, _______, _______, _______, XXXXXXX, KC_TAB,
-    _______, _______, _______, _______, _______, KC_BTN2,
+    _______, _______, _______, _______, _______, MS_BTN2,
     _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, KC_TRNS, _______,
-    KC_LPRN, KC_RPRN, KC_EQL, SPC_MO,   KC_BTN2, KC_BTN3
+    KC_LPRN, KC_RPRN, KC_EQL, SPC_MO,   MS_BTN2, MS_BTN3
     )
   };
 
@@ -103,9 +103,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #if defined(ENCODER_MAP_ENABLE)
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
-    [_00] =  { ENCODER_CCW_CW(KC_WH_D, KC_WH_U) },
+    [_00] =  { ENCODER_CCW_CW(MS_WHLD, MS_WHLU) },
     [_MO] =  { ENCODER_CCW_CW(KC_DOWN, KC_UP) },
-    [_FN] =  { ENCODER_CCW_CW(KC_WH_D, KC_WH_U) },
+    [_FN] =  { ENCODER_CCW_CW(MS_WHLD, MS_WHLU) },
     [_XL] =  { ENCODER_CCW_CW(KC_LEFT, KC_RGHT) },
 };
 #endif

@@ -28,13 +28,13 @@ qmk flash -kb handwired/ol5x15e2 -km default
 // Defines names for use in layer keycodes and the keymap
 enum layer_names {
     _00,
-    _QT,
-    _CM,
-    _CN,
     _FN,
     _MO,
     _NM,
-    _GM,
+    _QT,
+    _CM,
+    _CN,
+    _GM
 };
 
 
@@ -76,7 +76,7 @@ enum custom_keycodes {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_00] = LAYOUT_ortho_5x15(
-      KC_BTN2, KC_LCTL, KC_LSFT, KC_BTN3,  KC_ESC,  KC_TAB,     KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR,  KC_PSCR, KC_BTN1, DM_PLY1, KC_MNXT, KC_MPLY,
+      MS_BTN2, KC_LCTL, KC_LSFT, MS_BTN3,  KC_ESC,  KC_TAB,     KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR,  KC_PSCR, MS_BTN1, DM_PLY1, KC_MNXT, KC_MPLY,
       KC_ENT,  _______, _______, _______, _______, _______,       KC_P7,   KC_P8,   KC_P9, _______,  _______, _______, _______, _______, _______,
       KC_TAB,  _______, _______, _______, _______, _______,       KC_P4,   KC_P5,   KC_P6, _______,  _______, _______, _______, _______, _______,
       SC_LSPO, _______, _______, _______, _______, _______,       KC_P1,   KC_P2,   KC_P3, _______,  _______, _______, _______, _______, SC_RSPC,
@@ -91,10 +91,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       _______, _______, _______, XXXXXXX, _______,  KC_DEL, _______, _______, _______, KC_UNDS, _______, XXXXXXX, _______, _______, _______),
 
     [_MO] = LAYOUT_ortho_5x15(
-      _______, _______,	_______, KC_BTN1,  _______, _______, _______,   SC_UP,  _______, _______, _______, KC_BTN1, DM_REC1, _______,  _______,
-        WIN_L,   WIN_R, KC_PGDN,   KC_UP,  KC_PGUP, _______, KC_PGDN,   KC_UP,  KC_PGUP, _______, KC_WH_L, KC_MS_U, KC_WH_R, KC_WH_U,  _______,
-       WN_FLL,  WN_MON, KC_LEFT, KC_DOWN, KC_RIGHT,  S_RGHT, KC_LEFT, KC_DOWN, KC_RIGHT, _______, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D,  _______,
-      _______, _______, KY_XLSL,  S_DOWN,  _______, SC_RGHT,  S_LEFT,  S_DOWN,   S_RGHT, _______, KC_BTN1, _______, _______, _______,  _______,
+      _______, _______,	_______, MS_BTN1,  _______, _______, _______,   SC_UP,  _______, _______, _______, MS_BTN1, DM_REC1, _______,  _______,
+        WIN_L,   WIN_R, KC_PGDN,   KC_UP,  KC_PGUP, _______, KC_PGDN,   KC_UP,  KC_PGUP, _______, MS_WHLL, MS_WHLU, MS_WHLR, _______,  _______,
+       WN_FLL,  WN_MON, KC_LEFT, KC_DOWN, KC_RIGHT,  S_RGHT, KC_LEFT, KC_DOWN, KC_RIGHT, _______, MS_WHLL, MS_WHLD, MS_WHLR, _______,  _______,
+      _______, _______, KY_XLSL,  S_DOWN,  _______, SC_RGHT,  S_LEFT,  S_DOWN,   S_RGHT, _______, MS_BTN1, _______, _______, _______,  _______,
       _______, _______, _______, SC_DOWN,  XXXXXXX, _______, SC_LEFT, SC_DOWN,  SC_RGHT, _______, XXXXXXX, _______, _______, _______,  _______),
 
     [_NM] = LAYOUT_ortho_5x15(
@@ -102,7 +102,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       _______,  KC_GRV,   KC_LT,   KC_GT, KC_DQUO,  KC_DOT, KC_AMPR, KC_ASTR, KC_LPRN, KC_AMPR,  KY_DIA, KC_LBRC, KC_RBRC, KC_PERC, _______,
       _______, KC_EXLM, KC_MINS, KC_PLUS,  KC_EQL, KC_HASH,  KC_DLR, KC_PERC, KC_CIRC, KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN,   KC_AT, _______,
       _______, KC_CIRC, KC_SLSH, KC_ASTR, KC_BSLS, _______, KC_EXLM,   KC_AT, KC_HASH, KC_TILD,  KC_DLR, KC_LCBR, KC_RCBR, KC_QUES, _______,
-      _______, _______, _______, _______, _______, _______, KC_RPRN,  XXXXXXX,  KC_EQL, _______, _______, _______, _______, _______, _______),
+      _______, _______, _______, _______, _______, _______, KC_RPRN,  XXXXXXX, KC_EQL, _______, _______, _______, _______, _______, _______),
 
     [_QT] = LAYOUT_ortho_5x15(
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______,
@@ -130,7 +130,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_ESC,    KC_G,    KC_Q,    KC_W,    KC_E,    KC_R,   KC_P7,   KC_P8,   KC_P9, _______, _______, _______, _______, _______, _______,
        KC_TAB,    KC_M,    KC_A,    KC_S,    KC_D,    KC_F,   KC_P4,   KC_P5,   KC_P6, _______, _______, _______, _______, _______, _______,
       KC_LSFT,    KC_I,    KC_Z,    KC_X,    KC_C,    KC_V,   KC_P1,   KC_P2,   KC_P3, _______, _______, _______, _______, _______, _______,
-      KC_LCTL,    KC_K, XXXXXXX, XXXXXXX, KC_BTN2,  KC_SPC,   KC_P0, _______, _______, _______, _______, _______, _______, _______, _______)
+      KC_LCTL,    KC_K, XXXXXXX, XXXXXXX, MS_BTN2,  KC_SPC,   KC_P0, _______, _______, _______, _______, _______, _______, _______, _______)
 
   };
 
@@ -231,15 +231,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 #if defined(ENCODER_MAP_ENABLE)
     const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
         [_00] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-        [_QT] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
         [_FN] =  { ENCODER_CCW_CW(KC_RIGHT, KC_LEFT),   ENCODER_CCW_CW(KC_PGUP, KC_PGDN)  },
-        [_MO] =  { ENCODER_CCW_CW(KC_WH_D, KC_WH_U),    ENCODER_CCW_CW(KC_WH_R, KC_WH_L)  },
+        [_MO] =  { ENCODER_CCW_CW(MS_WHLD, MS_WHLU),    ENCODER_CCW_CW(MS_WHLR, MS_WHLL)  },
+        [_NM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+        [_QT] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
         [_CM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
         [_CN] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-        [_GM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-        [_NM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+        [_GM] =  { ENCODER_CCW_CW(KC_UP, KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  }
     };
 #endif
+
 
 #ifdef OLED_ENABLE
 

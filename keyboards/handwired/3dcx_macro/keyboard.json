@@ -8,6 +8,19 @@
     "processor": "atmega32u4",
     "bootloader": "caterina",
 
+   "usb": {
+        "vid": "0xFEED",
+        "pid": "0x0000",
+        "device_version": "0.0.1"
+        },
+
+    "features": {
+
+    },
+
+
+
+
 
 
     "matrix_pins": {
