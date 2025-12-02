@@ -63,7 +63,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ├─────┼─────┼─────┼─────┤                       ├─────┤
     |  1  |  2  |  3  |  +  |                       | ctl |
     ├─────┼─────┼─────┼─────┤─────┬─────┬─────┬─────┼─────┤
-    |  0  |  .  |ent.F| MO  ( rmb ) XL  | LMB |  S  | MMB |
+    |  0  |  .  |ent.F| MO  ( rmb ) XL  | lmb |  S  | mmb |
     └─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
 */
     [_00] = LAYOUT_ortho_5x6(
@@ -75,11 +75,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_MO] = LAYOUT_ortho_5x6(
-    _______, KC_END,  KC_DEL,  _______, XXXXXXX, _______,
-    KC_PGDN, KC_UP,   KC_PGUP, _______, _______, _______,
-    KC_LEFT, KC_DOWN, KC_RGHT, _______, KC_R,    _______,
-    _______, SC_DOWN, SC_RGHT, _______, _______, _______,
-    KC_SPC,  KC_PDOT, KC_EQL,  KC_TRNS, _______, _______
+    _______, KC_END,  KC_DEL,  C(KC_Z), XXXXXXX, _______,
+    KC_PGDN, KC_UP,   KC_PGUP, C(KC_V), _______, _______,
+    KC_LEFT, KC_DOWN, KC_RGHT, C(KC_C), KC_R,    _______,
+    _______, SC_DOWN, SC_RGHT, C(KC_X), _______, _______,
+    KC_SPC,  KC_PDOT, KC_EQL,  XXXXXXX, _______, _______
     ),
 
     [_FN] = LAYOUT_ortho_5x6(
@@ -87,15 +87,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_F7,   KC_F8,   KC_F9,   _______, _______, _______,
     KC_F4,   KC_F5,   KC_F6,   _______, _______, _______,
     KC_F1,   KC_F2,   KC_F3,   _______, _______, _______,
-    _______, _______, _______, _______, _______, _______
+    _______, _______, XXXXXXX, _______, _______, _______
     ),
 
     [_XL] = LAYOUT_ortho_5x6(
-    _______, _______, _______, _______, XXXXXXX, KC_TAB,
-    _______, _______, _______, _______, _______, MS_BTN2,
+    _______, _______, _______, _______, XXXXXXX, _______,
     _______, _______, _______, _______, _______, _______,
-    _______, _______, _______, _______, KC_TRNS, _______,
-    KC_LPRN, KC_RPRN, KC_EQL, SPC_MO,   MS_BTN2, MS_BTN3
+    _______, _______, _______, _______, XXXXXXX, _______,
+    _______, _______, _______, _______, _______, _______,
+    KC_LPRN, KC_RPRN, KC_EQL,  _______, _______, _______
     )
   };
 

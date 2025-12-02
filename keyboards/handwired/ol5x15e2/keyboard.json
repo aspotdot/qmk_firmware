@@ -3,7 +3,6 @@
     "maintainer": "aspotdot",
     "manufacturer": "handwire",
     "url": "https://github.com/aspotdot",
-    "maintainer": "aspotdot",
     "usb": {
         "vid": "0xFEED",
         "pid": "0x0000",

@@ -76,61 +76,61 @@ enum custom_keycodes {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_00] = LAYOUT_ortho_5x15(
-      MS_BTN2, KC_LCTL, KC_LSFT, MS_BTN3,  KC_ESC,  KC_TAB,     KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR,  KC_PSCR, MS_BTN1, DM_PLY1, KC_MNXT, KC_MPLY,
-      KC_ENT,  _______, _______, _______, _______, _______,       KC_P7,   KC_P8,   KC_P9, _______,  _______, _______, _______, _______, _______,
-      KC_TAB,  _______, _______, _______, _______, _______,       KC_P4,   KC_P5,   KC_P6, _______,  _______, _______, _______, _______, _______,
-      SC_LSPO, _______, _______, _______, _______, _______,       KC_P1,   KC_P2,   KC_P3, _______,  _______, _______, _______, _______, SC_RSPC,
-      LCTL_BR, KC_LALT, KC_LGUI, MO(_FN), MO(_MO), KC_BSPC, SH_T(KC_P0),  NM_DOT, KC_PENT,  KC_SPC,  MO(_MO), MO(_FN), KC_RGUI, KC_RALT, RCTL_BR),
+    MS_BTN2, KC_LCTL, KC_LSFT, MS_BTN3,  KC_ESC,  KC_TAB,     KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR,  KC_PSCR, MS_BTN1, DM_PLY1, KC_MNXT, KC_MPLY,
+    KC_ENT,  _______, _______, _______, _______, _______,       KC_P7,   KC_P8,   KC_P9, _______,  _______, _______, _______, _______, _______,
+    KC_TAB,  _______, _______, _______, _______, _______,       KC_P4,   KC_P5,   KC_P6, _______,  _______, _______, _______, _______, _______,
+    SC_LSPO, _______, _______, _______, _______, _______,       KC_P1,   KC_P2,   KC_P3, _______,  _______, _______, _______, _______, SC_RSPC,
+    LCTL_BR, KC_LALT, KC_LGUI, MO(_FN), MO(_MO), KC_BSPC, SH_T(KC_P0),  NM_DOT, KC_PENT,  KC_SPC,  MO(_MO), MO(_FN), KC_RGUI, KC_RALT, RCTL_BR),
 
 
     [_FN] = LAYOUT_ortho_5x15(
-      TO(_GM), JIGGLE,  _______, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, _______, _______,  AU_TOGG,
-      SRCHSEL, _______, _______, _______, _______, _______,   KC_F7,   KC_F8,   KC_F9, _______, _______, _______, _______, _______,  TO(_QT),
-      _______, _______, _______, _______, _______, _______,   KC_F4,   KC_F5,   KC_F6, _______, _______, _______, _______, _______,  TO(_CM),
-      SELWORD, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), _______,   KC_F1,   KC_F2,   KC_F3, _______, _______, _______, _______, _______,  TO(_CN),
-      _______, _______, _______, XXXXXXX, _______,  KC_DEL, _______, _______, _______, KC_UNDS, _______, XXXXXXX, _______, _______, _______),
+    TO(_GM),  JIGGLE, _______, _______,  CA_ESC, _______,  KC_F10,  KC_F11,  KC_F12, _______, _______, _______, _______, _______,  AU_TOGG,
+    SRCHSEL, _______,  WN_FLL, _______, _______, _______,   KC_F7,   KC_F8,   KC_F9, _______, _______, _______, _______, _______,  TO(_QT),
+    _______,   WIN_L,  WN_MON,   WIN_R, _______, _______,   KC_F4,   KC_F5,   KC_F6, _______, _______, _______, _______, _______,  TO(_CM),
+    SELWORD, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), _______,   KC_F1,   KC_F2,   KC_F3, _______, _______, _______, _______, _______,  TO(_CN),
+    _______, _______, _______, KC_TRNS, _______,  KC_DEL, _______, _______, _______, KC_UNDS, _______, KC_TRNS, _______, _______, _______),
 
     [_MO] = LAYOUT_ortho_5x15(
-      _______, _______,	_______, MS_BTN1,  _______, _______, _______,   SC_UP,  _______, _______, _______, MS_BTN1, DM_REC1, _______,  _______,
-        WIN_L,   WIN_R, KC_PGDN,   KC_UP,  KC_PGUP, _______, KC_PGDN,   KC_UP,  KC_PGUP, _______, MS_WHLL, MS_WHLU, MS_WHLR, _______,  _______,
-       WN_FLL,  WN_MON, KC_LEFT, KC_DOWN, KC_RIGHT,  S_RGHT, KC_LEFT, KC_DOWN, KC_RIGHT, _______, MS_WHLL, MS_WHLD, MS_WHLR, _______,  _______,
-      _______, _______, KY_XLSL,  S_DOWN,  _______, SC_RGHT,  S_LEFT,  S_DOWN,   S_RGHT, _______, MS_BTN1, _______, _______, _______,  _______,
-      _______, _______, _______, SC_DOWN,  XXXXXXX, _______, SC_LEFT, SC_DOWN,  SC_RGHT, _______, XXXXXXX, _______, _______, _______,  _______),
+    _______, _______, _______, MS_BTN1,  _______, _______, _______,   SC_UP,  _______, _______, _______, MS_BTN1, DM_REC1, _______,  _______,
+    _______, _______, KC_PGDN,   KC_UP,  KC_PGUP, _______, KC_PGDN,   KC_UP,  KC_PGUP, _______, MS_WHLL, MS_WHLU, MS_WHLR, _______,  _______,
+    _______, _______, KC_LEFT, KC_DOWN, KC_RIGHT,  S_RGHT, KC_LEFT, KC_DOWN, KC_RIGHT, _______, MS_LEFT, MS_WHLD, MS_RGHT, _______,  _______,
+    _______, _______, KY_XLSL,  S_DOWN,  _______, SC_RGHT,  S_LEFT,  S_DOWN,   S_RGHT, _______, MS_BTN1, _______, _______, _______,  _______,
+    _______, _______, _______, SC_DOWN,  KC_TRNS, _______, SC_LEFT, SC_DOWN,  SC_RGHT, _______, KC_TRNS, _______, _______, _______,  _______),
 
     [_NM] = LAYOUT_ortho_5x15(
-      _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5, KY_PLMN,  KC_NUM,  KY_DEG,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,
-      _______,  KC_GRV,   KC_LT,   KC_GT, KC_DQUO,  KC_DOT, KC_AMPR, KC_ASTR, KC_LPRN, KC_AMPR,  KY_DIA, KC_LBRC, KC_RBRC, KC_PERC, _______,
-      _______, KC_EXLM, KC_MINS, KC_PLUS,  KC_EQL, KC_HASH,  KC_DLR, KC_PERC, KC_CIRC, KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN,   KC_AT, _______,
-      _______, KC_CIRC, KC_SLSH, KC_ASTR, KC_BSLS, _______, KC_EXLM,   KC_AT, KC_HASH, KC_TILD,  KC_DLR, KC_LCBR, KC_RCBR, KC_QUES, _______,
-      _______, _______, _______, _______, _______, _______, KC_RPRN,  XXXXXXX, KC_EQL, _______, _______, _______, _______, _______, _______),
+    _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5, KY_PLMN,  KC_NUM,  KY_DEG,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,
+    _______,  KC_GRV,   KC_LT,   KC_GT, KC_DQUO,  KC_DOT, KC_AMPR, KC_ASTR, KC_LPRN, KC_AMPR,  KY_DIA, KC_LBRC, KC_RBRC, KC_PERC, _______,
+    _______, KC_EXLM, KC_MINS, KC_PLUS,  KC_EQL, KC_HASH,  KC_DLR, KC_PERC, KC_CIRC, KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN,   KC_AT, _______,
+    _______, KC_CIRC, KC_SLSH, KC_ASTR, KC_BSLS, _______, KC_EXLM,   KC_AT, KC_HASH, KC_TILD,  KC_DLR, KC_LCBR, KC_RCBR, KC_QUES, _______,
+    _______, _______, _______, _______, _______, _______, KC_RPRN,  KC_TRNS, KC_EQL, _______, _______, _______, _______, _______, _______),
 
     [_QT] = LAYOUT_ortho_5x15(
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______,
-      _______,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T, _______, _______, _______,    KC_Y,     KC_U,    KC_I,    KC_O,    KC_P, KC_BSLS,
-      _______,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G, _______, _______, _______,    KC_H,     KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,
-      _______,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B, _______, _______, _______,    KC_N,     KC_M, KC_COMM,  KC_DOT, KC_SLSH, _______,
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______, _______, _______, _______),
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______,
+    _______,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T, _______, _______, _______,    KC_Y,     KC_U,    KC_I,    KC_O,    KC_P, KC_BSLS,
+    _______,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G, _______, _______, _______,    KC_H,     KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,
+    _______,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B, _______, _______, _______,    KC_N,     KC_M, KC_COMM,  KC_DOT, KC_SLSH, _______,
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______, _______, _______, _______),
 
     [_CM] = LAYOUT_ortho_5x15(
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-      _______,    KC_Q,    KC_W,    KC_F,    KC_P,    KC_B, _______, _______, _______,    KC_J,    KC_L,    KC_U,    KC_Y, KC_QUOT, _______,
-      _______,    KC_A,    KC_R,    KC_S,    KC_T,    KC_G, _______, _______, _______,    KC_K,    KC_N,    KC_E,    KC_I,    KC_A, _______,
-      _______,    KC_Z,    KC_X,    KC_C,    KC_D,    KC_V, _______, _______, _______,    KC_M,    KC_H, KC_COMM,  KC_DOT, KC_SLSH, _______,
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______,    KC_Q,    KC_W,    KC_F,    KC_P,    KC_B, _______, _______, _______,    KC_J,    KC_L,    KC_U,    KC_Y, KC_QUOT, _______,
+    _______,    KC_A,    KC_R,    KC_S,    KC_T,    KC_G, _______, _______, _______,    KC_K,    KC_N,    KC_E,    KC_I,    KC_A, _______,
+    _______,    KC_Z,    KC_X,    KC_C,    KC_D,    KC_V, _______, _______, _______,    KC_M,    KC_H, KC_COMM,  KC_DOT, KC_SLSH, _______,
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
 
     [_CN] = LAYOUT_ortho_5x15(
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-      _______,    KC_W,    KC_L,    KC_Y,    KC_P,    KC_B, _______, _______, _______,    KC_Z,    KC_F,    KC_O,    KC_U, KC_SCLN, _______,
-      _______,    KC_C,    KC_R,    KC_S,    KC_T,    KC_G, _______, _______, _______,    KC_M,    KC_N,    KC_E,    KC_I,    KC_A, _______,
-      _______,    KC_Q,    KC_J,    KC_V,    KC_D,    KC_K, _______, _______, _______,    KC_X,    KC_H, KC_COMM,  KC_DOT, KC_SLSH, _______,
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______,    KC_W,    KC_L,    KC_Y,    KC_P,    KC_B, _______, _______, _______,    KC_Z,    KC_F,    KC_O,    KC_U, KC_SCLN, _______,
+    _______,    KC_C,    KC_R,    KC_S,    KC_T,    KC_G, _______, _______, _______,    KC_M,    KC_N,    KC_E,    KC_I,    KC_A, _______,
+    _______,    KC_Q,    KC_J,    KC_V,    KC_D,    KC_K, _______, _______, _______,    KC_X,    KC_H, KC_COMM,  KC_DOT, KC_SLSH, _______,
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
 
     [_GM] = LAYOUT_ortho_5x15(
-      TO(_00),    KC_1,    KC_2,    KC_3,    KC_4,    KC_5, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-       KC_ESC,    KC_G,    KC_Q,    KC_W,    KC_E,    KC_R,   KC_P7,   KC_P8,   KC_P9, _______, _______, _______, _______, _______, _______,
-       KC_TAB,    KC_M,    KC_A,    KC_S,    KC_D,    KC_F,   KC_P4,   KC_P5,   KC_P6, _______, _______, _______, _______, _______, _______,
-      KC_LSFT,    KC_I,    KC_Z,    KC_X,    KC_C,    KC_V,   KC_P1,   KC_P2,   KC_P3, _______, _______, _______, _______, _______, _______,
-      KC_LCTL,    KC_K, XXXXXXX, XXXXXXX, MS_BTN2,  KC_SPC,   KC_P0, _______, _______, _______, _______, _______, _______, _______, _______)
+    TO(_00),   KC_1,    KC_2,    KC_3,    KC_4,    KC_5, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    KC_ESC,    KC_G,    KC_Q,    KC_W,    KC_E,    KC_R,   KC_P7,   KC_P8,   KC_P9, _______, _______, _______, _______, _______, _______,
+    KC_TAB,    KC_M,    KC_A,    KC_S,    KC_D,    KC_F,   KC_P4,   KC_P5,   KC_P6, _______, _______, _______, _______, _______, _______,
+    KC_LSFT,   KC_I,    KC_Z,    KC_X,    KC_C,    KC_V,   KC_P1,   KC_P2,   KC_P3, _______, _______, _______, _______, _______, _______,
+    KC_LCTL,   KC_K, XXXXXXX, XXXXXXX, MS_BTN2,  KC_SPC,   KC_P0, _______, _______, _______, _______, _______, _______, _______, _______)
 
   };
 
@@ -173,12 +173,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     if (mouse_jiggler_enabled && timer_elapsed(mouse_jiggler_timer) > 5000) {
         mouse_jiggler_timer = timer_read();
         return mouse_jiggler_enabled;
-    }
-    return memcmp(new_report, old_report, sizeof(report_mouse_t));
+        }
+        return memcmp(new_report, old_report, sizeof(report_mouse_t));
     }
     void mouse_jiggle_toggle(void) {
-    mouse_jiggler_timer = timer_read();
-    mouse_jiggler_enabled = ! mouse_jiggler_enabled;
+        mouse_jiggler_timer = timer_read();
+        mouse_jiggler_enabled = ! mouse_jiggler_enabled;
     }
 
 // Macro set up: ref //https://getreuer.info/posts/keyboards/macros/index.html
@@ -244,17 +244,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 
 #ifdef OLED_ENABLE
 
-    // base icons
-    static const char   top[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0};
-    static const char  eyes[] = {0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0};
-    static const char mouth[] = {0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0};
+// base icons
+static const char   top[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0};
+static const char  eyes[] = {0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0};
+static const char mouth[] = {0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0};
 
-    static const char   GLtop[] = {0x94, 0x95, 0x96, 0x97, 0x98, 0};
-    static const char  GLeyes[] = {0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0};
-    static const char GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
+static const char   GLtop[] = {0x94, 0x95, 0x96, 0x97, 0x98, 0};
+static const char  GLeyes[] = {0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0};
+static const char GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
 
 
-    // icon options
+// icon options
  static const char mindblown[] = {0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0}; // top
  static const char       cat[] = {0x85, 0x86, 0x87, 0x88, 0x89, 0}; // top
  static const char      pong[] = {0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0}; // eyes
@@ -264,7 +264,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
  static  uint32_t sleep_timer = 0;
  static  uint32_t glitch_timer = 0;
 
- const uint8_t single_bit_masks[8] = {127, 191, 223, 239, 247, 251, 253, 254}; //Setup some mask which can be or'd with bytes to turn off pixels
+ // Fade effect function
+        const uint8_t single_bit_masks[8] = {127, 191, 223, 239, 247, 251, 253, 254}; //Setup some mask which can be or'd with bytes to turn off pixels
   static void fade_display(void) {
       //Define the reader structure
       oled_buffer_reader_t reader;
@@ -317,40 +318,39 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
       oled_write_P(PSTR("number\n"), false);
       break;
     default:
-        oled_write_P(PSTR("**\n"), false);     }
-
-
-
-  // draw top
-  oled_set_cursor(8,1);
-  switch (get_highest_layer(layer_state)) {
-    case _MO:
-      oled_write(mindblown,false);
-      break;
-    default:
-      oled_write(top,false);
+        oled_write_P(PSTR("**\n"), false);
     }
-  // draw eyes
-  oled_set_cursor(8,2);
-  switch (get_highest_layer(layer_state)) {
-    case _GM:
-      oled_write(pong,false);
-      break;
+
+    // draw top
+    oled_set_cursor(8,1);
+    switch (get_highest_layer(layer_state)) {
+        case _MO:
+            oled_write(mindblown,false);
+        break;
+        default:
+            oled_write(top,false);
+        }
+    // draw eyes
+    oled_set_cursor(8,2);
+    switch (get_highest_layer(layer_state)) {
+        case _GM:
+            oled_write(pong,false);
+        break;
     default:
          oled_write(eyes,false);
-     }
-  // draw mouth
-  oled_set_cursor(8,3);
+        }
+    // draw mouth
+    oled_set_cursor(8,3);
     switch (get_highest_layer(layer_state)) {
-      case _FN:
-        oled_write(mouthOpen,false);
+        case _FN:
+            oled_write(mouthOpen,false);
         break;
-      case _NM:
-        oled_write(vampire,false);
+        case _NM:
+            oled_write(vampire,false);
         break;
-      default:
-        oled_write(mouth,false);
-      }
+        default:
+            oled_write(mouth,false);
+        }
 
     if (get_mods() & MOD_MASK_ALT) {
       oled_set_cursor(9, 2);
@@ -367,6 +367,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     if (get_mods() & MOD_MASK_SHIFT) {
       oled_set_cursor(11, 2);
       oled_write_char(0x9c, get_mods() & MOD_MASK_CTRL);
+    }
+    if (mouse_jiggler_enabled) {
+      oled_set_cursor(2, 2);
+      oled_write_P(PSTR("D"), false);
+    }
+    else {
+      oled_set_cursor(2, 2);
+      oled_write_P(PSTR("W"), false);
     }
  }
 
@@ -410,7 +418,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     if(get_current_wpm() != 000) {
         oled_on(); // not essential but turns on animation OLED with any alpha keypress
         drawscreen();
-      } else if (timer_elapsed32(sleep_timer) > 30000 && timer_elapsed32(sleep_timer) < 90000) {
+      } else if (timer_elapsed32(sleep_timer) > 300000 && timer_elapsed32(sleep_timer) < 900000) {
            screen_save();
       } else {
          fade_display();
