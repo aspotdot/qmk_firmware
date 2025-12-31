@@ -72,6 +72,12 @@ enum custom_keycodes {
   JIGGLE
 };
 
+static deferred_token jiggler_token = INVALID_DEFERRED_TOKEN;
+
+#ifdef OLED_ENABLE
+void init_gol(void);
+#endif
+
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -191,12 +197,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 
     // https://getreuer.info/posts/keyboards/macros3/index.html#a-mouse-jiggler
   if (record->event.pressed) {
-    static deferred_token token = INVALID_DEFERRED_TOKEN;
+    // static deferred_token token = INVALID_DEFERRED_TOKEN; // Moved to global jiggler_token
     static report_mouse_t report = {0};
-    if (token) {
+    if (jiggler_token) {
       // If jiggler is currently running, stop when any key is pressed.
-      cancel_deferred_exec(token);
-      token = INVALID_DEFERRED_TOKEN;
+      cancel_deferred_exec(jiggler_token);
+      jiggler_token = INVALID_DEFERRED_TOKEN;
       report = (report_mouse_t){};  // Clear the mouse.
       host_mouse_send(&report);
     } else if (keycode == JIGGLE) {
@@ -213,7 +219,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         host_mouse_send(&report);
         return 16;  // Call the callback every 16 ms.
       }
-      token = defer_exec(1, jiggler_callback, NULL);  // Schedule callback.
+      jiggler_token = defer_exec(1, jiggler_callback, NULL);  // Schedule callback.
+      #ifdef OLED_ENABLE
+      init_gol();
+      #endif
     }
   }
   return true;
@@ -377,10 +386,83 @@ static const char GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
            }
          }
 
+// Game of Life Implementation
+#define GOL_W 64 // 128 / 2
+#define GOL_H 16 // 32 / 2
+static uint8_t gol_grid[GOL_H][GOL_W / 8];
+static uint8_t gol_next[GOL_H][GOL_W / 8];
+
+static void set_gol(uint8_t grid[GOL_H][GOL_W / 8], int x, int y, bool v) {
+    if (x < 0 || x >= GOL_W || y < 0 || y >= GOL_H) return;
+    if (v) grid[y][x/8] |= (1<<(x%8));
+    else   grid[y][x/8] &= ~(1<<(x%8));
+}
+
+static bool get_gol(uint8_t grid[GOL_H][GOL_W / 8], int x, int y) {
+    if (x < 0 || x >= GOL_W || y < 0 || y >= GOL_H) return false;
+    return (grid[y][x/8] >> (x%8)) & 1;
+}
+
+void init_gol(void) {
+    for(int y=0; y<GOL_H; y++) {
+        for(int x=0; x<GOL_W/8; x++) {
+            gol_grid[y][x] = rand();
+        }
+    }
+}
+
+static void update_gol(void) {
+    for (int y = 0; y < GOL_H; y++) {
+        for (int x = 0; x < GOL_W; x++) {
+            int n = 0;
+            // Limit dy to 0 to prevent upward propagation (cells only influenced by above and same row)
+            for (int dy = -1; dy <= 0; dy++) {
+                for (int dx = -1; dx <= 1; dx++) {
+                    if ((dx || dy) && get_gol(gol_grid, x+dx, y+dy)) n++;
+                }
+            }
+            bool alive = get_gol(gol_grid, x, y);
+            // Rules: Alive & 2-3 neighbors -> Alive. Dead & 3 neighbors -> Alive.
+            set_gol(gol_next, x, y, (alive && n == 2) || n == 3);
+        }
+    }
+    memcpy(gol_grid, gol_next, sizeof(gol_grid));
+}
+
+static void draw_gol_oled(void) {
+    // Draw 64x16 grid scaled to 128x32
+    for (uint16_t i = 0; i < 512; ++i) { // 128 columns * 4 pages
+        uint8_t col = i % 128;
+        uint8_t page = i / 128; // 0..3
+        uint8_t byte = 0;
+        int gx = col / 2;
+        // Each page covers 8 vertical pixels. GOL cells are 2x2.
+        // So this byte covers 4 GOL rows: (page*4) through (page*4 + 3)
+        for (int r = 0; r < 4; r++) { 
+            if (get_gol(gol_grid, gx, page * 4 + r)) {
+                // Set the 2 bits corresponding to this GOL cell
+                byte |= (3 << (2 * r));
+            }
+        }
+        oled_write_raw_byte(byte, i);
+    }
+}
+
+
 
   bool oled_task_user(void) {
     static  uint32_t saveTime = 5*60*1000; // 5 minutes
     static  uint32_t sleepTime = 15*60*1000; // 10 minutes
+
+    if (jiggler_token != INVALID_DEFERRED_TOKEN) {
+        static uint32_t gol_timer = 0;
+        if (timer_elapsed32(gol_timer) > 100) {
+            gol_timer = timer_read32();
+            update_gol();
+            draw_gol_oled();
+        }
+        return false;
+    }
 
     if(get_current_wpm() != 000 && sleep_timer < saveTime) {
         oled_on(); // not essential but turns on animation OLED with any alpha keypress
