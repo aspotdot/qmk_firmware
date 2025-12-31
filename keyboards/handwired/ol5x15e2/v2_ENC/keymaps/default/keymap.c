@@ -77,7 +77,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_QT] = LAYOUT_ortho_5x15(
     MS_BTN2, KC_LCTL, M1_SFT , MS_BTN3, KC_ESC,  KC_TAB , KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR, KC_PSCR, MS_BTN2, DM_PLY1, KC_MNXT, KC_MPLY,
-    KC_ENT , KC_Q   , KC_W   , KC_E   , KC_R   , KC_T   , KC_7   , KC_8   , KC_9   , KC_Y   , KC_U   , KC_I   , KC_O   , KC_P   , KC_BSLS,
+    KC_ENT , KC_Q   , KC_W   , KC_E   , KC_R   , KC_T   , KC_8   , KC_8   , KC_9   , KC_Y   , KC_U   , KC_I   , KC_O   , KC_P   , KC_BSLS,
     KC_TAB , KC_A   , KC_S   , KC_D   , KC_F   , KC_G   , KC_4   , KC_5   , KC_6   , KC_H   , KC_J   , KC_K   , KC_L   , KC_SCLN, KC_QUOT,
     SC_LSPO, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   , KC_1   , KC_2   , KC_3   , KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, SC_RSPC,
     LCTL_BR, KC_LALT, KC_LGUI, MO(_FN), MO(_MO), KC_BSPC, SH_0   , NM_DOT , KC_PENT, KC_SPC , MO(_MO), MO(_FN), KC_RGUI, KC_RALT, RCTL_BR),
@@ -154,6 +154,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #endif
 
 
+// Mouse jiggler: add JIGGLE macro and keycode
+    // https://www.reddit.com/r/olkb/comments/t4imri/comment/hz2w67i/?context=3
+    bool mouse_jiggler_enabled = false;
+    static uint16_t mouse_jiggler_timer;
+
+    bool has_mouse_report_changed(report_mouse_t* new_report, report_mouse_t* old_report) {
+    // Only report every 5 seconds.
+    if (mouse_jiggler_enabled && timer_elapsed(mouse_jiggler_timer) > 5000) {
+        mouse_jiggler_timer = timer_read();
+        return mouse_jiggler_enabled;
+        }
+        return memcmp(new_report, old_report, sizeof(report_mouse_t));
+    }
+    void mouse_jiggle_toggle(void) {
+        mouse_jiggler_timer = timer_read();
+        mouse_jiggler_enabled = ! mouse_jiggler_enabled;
+    }
+
 // Macro set up: ref //https://getreuer.info/posts/keyboards/macros/index.html
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
   switch (keycode) {
@@ -187,41 +205,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             SEND_STRING(SS_LCTL(SS_TAP(X_UP) SS_TAP(X_LEFT)) SS_LSFT(SS_LCTL(SS_TAP(X_DOWN) SS_TAP(X_RIGHT))));
         }
             return false;
-    }
 
-    // https://getreuer.info/posts/keyboards/macros3/index.html#a-mouse-jiggler
-  if (record->event.pressed) {
-    static deferred_token token = INVALID_DEFERRED_TOKEN;
-    static report_mouse_t report = {0};
-    if (token) {
-      // If jiggler is currently running, stop when any key is pressed.
-      cancel_deferred_exec(token);
-      token = INVALID_DEFERRED_TOKEN;
-      report = (report_mouse_t){};  // Clear the mouse.
-      host_mouse_send(&report);
-    } else if (keycode == JIGGLE) {
-      uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
-        // Deltas to move in a circle of radius 20 pixels over 32 frames.
-        static const int8_t deltas[32] = {
-            0, -1, -2, -2, -3, -3, -4, -4, -4, -4, -3, -3, -2, -2, -1, 0,
-            0, 1, 2, 2, 3, 3, 4, 4, 4, 4, 3, 3, 2, 2, 1, 0};
-        static uint8_t phase = 0;
-        // Get x delta from table and y delta by rotating a quarter cycle.
-        report.x = deltas[phase];
-        report.y = deltas[(phase + 8) & 31];
-        phase = (phase + 1) & 31;
-        host_mouse_send(&report);
-        return 16;  // Call the callback every 16 ms.
-      }
-      token = defer_exec(1, jiggler_callback, NULL);  // Schedule callback.
+    case JIGGLE:
+          mouse_jiggle_toggle();
+          return false;
     }
-  }
   return true;
 }
-  
-
-
-
 
 #ifdef ENCODER_MAP_ENABLE
     const uint8_t PROGMEM encoder_hand_swap_config[NUM_ENCODERS] = {0};
@@ -336,6 +326,13 @@ static const char GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
     if (get_mods() & MOD_MASK_SHIFT) {
       oled_set_cursor(11, 2);
       oled_write_char(0x9c, get_mods() & MOD_MASK_CTRL);
+    }
+    if (mouse_jiggler_enabled) {
+      oled_set_cursor(2, 2);
+      oled_write_P(PSTR("D"), false);
+        } else {
+        oled_set_cursor(2, 2);
+        oled_write_P(PSTR("W"), false);
     }
     if (is_caps_word_on()) {
         oled_set_cursor(8,2);
