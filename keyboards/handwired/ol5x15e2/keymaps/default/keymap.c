@@ -180,6 +180,93 @@ static uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
 
 static bool jiggler_enable = false;
 
+// Matrix Rain Implementation
+#define DRAINS_COLS 21 // 128 pixels / 6px font width = 21.3
+#define DRAINS_ROWS 4  // 32 pixels / 8px font height
+// 127 will represent "inactive" or "off screen" safely above DRAINS_ROWS
+static int8_t matrix_drops[DRAINS_COLS];
+static uint8_t matrix_speeds[DRAINS_COLS];
+static char matrix_col_chars[DRAINS_COLS];
+
+void init_matrix(void) {
+    for (int i = 0; i < DRAINS_COLS; i++) {
+        matrix_drops[i] = 127; // Start inactive
+        matrix_col_chars[i] = 0x01 + (rand() % (0xDF - 0x01)); 
+    }
+}
+
+static void update_matrix(void) {
+    static uint8_t tick = 0;
+    tick++;
+    for (int i = 0; i < DRAINS_COLS; i++) {
+        // Only advance if active (not 127)
+        if (matrix_drops[i] != 127) {
+             // Advance drop based on speed
+            if (tick % matrix_speeds[i] == 0) {
+                matrix_drops[i]++;
+            }
+        }
+        
+        // Reset if it fell off screen (height + tail length)
+        // OR if it's inactive (127) and Jiggler is ON, we might want to start it?
+        // Actually, init_matrix handles the start. Here we just handle the loop.
+        
+        if (matrix_drops[i] > DRAINS_ROWS + 4) {
+             if (jiggler_token != INVALID_DEFERRED_TOKEN) {
+                 // Loop if Jiggler is ON
+                 matrix_drops[i] = -(rand() % 10);
+                 matrix_speeds[i] = (rand() % 4) + 1;
+                 matrix_col_chars[i] = 0x01 + (rand() % (0xDF - 0x01));
+             } else {
+                 // Stop if Jiggler is OFF (Typing mode ends drop)
+                 matrix_drops[i] = 127; 
+             }
+        }
+        
+        // If Jiggler is ON and drop is inactive, chance to start it
+        if (jiggler_token != INVALID_DEFERRED_TOKEN && matrix_drops[i] == 127) {
+            if ((rand() % 100) < 5) { // 5% chance to start a drop per frame
+                matrix_drops[i] = -(rand() % 10);
+                 matrix_speeds[i] = (rand() % 4) + 1;
+                 matrix_col_chars[i] = 0x01 + (rand() % (0xDF - 0x01));
+            }
+        }
+    }
+}
+
+static void draw_matrix(void) {
+    for (int col = 0; col < DRAINS_COLS; col++) {
+        int head = matrix_drops[col];
+        int x = col * 6;
+        
+        if (head >= 0 && head < DRAINS_ROWS) {
+            oled_set_cursor(x / 6, head); // Column is in chars, Row is in chars
+            // Check if char is valid (not 0), else random (shouldnt happen)
+            unsigned char r = matrix_col_chars[col];
+            if (r == 0) r = 0x01 + (rand() % (0xDF - 0x01));
+            oled_write_char(r, false);
+        }
+        
+        // Randomize the character immediately behind the head to create a random trail
+        int tail_start = head - 1;
+        if (tail_start >= 0 && tail_start < DRAINS_ROWS) {
+            oled_set_cursor(x / 6, tail_start);
+            unsigned char rand_char = 0x01 + (rand() % (0xDF - 0x01));
+            oled_write_char(rand_char, false);
+        }
+
+        // Erase trail (very simple single-falling-char effect for now, 
+        // essentially the "drop" is length 1. To make it a trail, we check positions above head)
+        // Let's make a trail of length 4
+        int tail_end = head - 4;
+        if (tail_end >= 0 && tail_end < DRAINS_ROWS) {
+             oled_set_cursor(x / 6, tail_end);
+             oled_write_char(' ', false);
+        }
+    }
+}
+
+
 // Macro set up: ref //https://getreuer.info/posts/keyboards/macros/index.html
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
   if (record->event.pressed) {
@@ -192,8 +279,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         host_mouse_send(&report);
         #ifdef OLED_ENABLE
         oled_clear();
+        init_matrix(); // Reset matrix to inactive state
         #endif
     }
+    
+    // Typing rain trigger
+    #ifdef OLED_ENABLE
+    char charDrop = 0;
+    if (keycode >= KC_A && keycode <= KC_Z) charDrop = 'a' + (keycode - KC_A);
+    else if (keycode >= KC_1 && keycode <= KC_0) charDrop = (keycode == KC_0) ? '0' : '1' + (keycode - KC_1);
+    
+    if (charDrop) {
+        int col = rand() % DRAINS_COLS;
+        matrix_drops[col] = 0; // Start at top
+        matrix_col_chars[col] = charDrop;
+        matrix_speeds[col] = 3; // Fast drop for typing 
+        
+    }
+    #endif
   }
   switch (keycode) {
     case SELWORD:  // Selects the current word under the cursor.
@@ -238,7 +341,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 
 void matrix_scan_user(void) {
     if (jiggler_enable && jiggler_token == INVALID_DEFERRED_TOKEN) {
-        if (timer_elapsed32(sleep_timer) > 2*60*1000) { // 2 minutes
+        if (timer_elapsed32(sleep_timer) > 10) { // 2 minutes 2*60*1000
              jiggler_token = defer_exec(1, jiggler_callback, NULL);
              #ifdef OLED_ENABLE
              init_matrix();
@@ -411,76 +514,39 @@ static const char    GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
          }
 
 
-// Matrix Rain Implementation
-#define DRAINS_COLS 21 // 128 pixels / 6px font width = 21.3
-#define DRAINS_ROWS 4  // 32 pixels / 8px font height
-static int8_t matrix_drops[DRAINS_COLS];
-static uint8_t matrix_speeds[DRAINS_COLS];
 
-void init_matrix(void) {
-    for (int i = 0; i < DRAINS_COLS; i++) {
-        matrix_drops[i] = -(rand() % 20); // Start drops above screen randomly
-        matrix_speeds[i] = (rand() % 4) + 1; // Speed 1 (fast) to 4 (slow)
-    }
-}
-
-static void update_matrix(void) {
-    static uint8_t tick = 0;
-    tick++;
-    for (int i = 0; i < DRAINS_COLS; i++) {
-        // Advance drop based on speed
-        if (tick % matrix_speeds[i] == 0) {
-            matrix_drops[i]++;
-        }
-        
-        // Reset if it fell off screen (height + tail length)
-        if (matrix_drops[i] > DRAINS_ROWS + 10){
-             matrix_drops[i] = -(rand() % 10);
-             matrix_speeds[i] = (rand() % 4) + 1; // Pick new speed
-        }
-    }
-}
-
-static void draw_matrix(void) {
-    for (int col = 0; col < DRAINS_COLS; col++) {
-        int head = matrix_drops[col];
-        int x = col * 6;
-        
-        if (head >= 0 && head < DRAINS_ROWS) {
-            oled_set_cursor(x / 6, head); // Column is in chars, Row is in chars
-            unsigned char r = 0x01 + (rand() % (0xDF - 0x01));
-            oled_write_char(r, false);
-        }
-        // Erase trail (very simple single-falling-char effect for now, 
-        // essentially the "drop" is length 1. To make it a trail, we check positions above head)
-        // Let's make a trail of length 4
-        int tail_end = head - 4;
-        if (tail_end >= 0 && tail_end < DRAINS_ROWS) {
-             oled_set_cursor(x / 6, tail_end);
-             oled_write_char(' ', false);
-        }
-    }
-}
 
 
   bool oled_task_user(void) {
     static  uint32_t saveTime = 3*60*1000; // 3 minutes
     static  uint32_t sleepTime = 15*60*1000; // 15 minutes
 
-    if (jiggler_token != INVALID_DEFERRED_TOKEN) {
+    if (jiggler_token != INVALID_DEFERRED_TOKEN || timer_elapsed32(sleep_timer) < saveTime) {
+        // Run animation if Jiggler is ON or if keyboard is Active
         static uint32_t matrix_timer = 0;
         if (timer_elapsed32(matrix_timer) > 120) { // Rain speed
             matrix_timer = timer_read32();
             update_matrix();
-            drawscull();
+            if (timer_elapsed32(sleep_timer) < saveTime) {
+                // Regular mode: Draw Skull (active face)
+                 oled_on();
+                 drawscull();
+            } else {
+                // Jiggler mode with timeout exceeded? shouldn't hit here due to logic overlap
+                 drawscull();
+            }
+            
             draw_matrix();
         }
-        return false;
+    }
+   
+    if (jiggler_token != INVALID_DEFERRED_TOKEN) {
+         return false; // Jiggler handles its own flow (and the block above handles visuals)
     }
 
     if(timer_elapsed32(sleep_timer) < saveTime) {
-        oled_on(); // not essential but turns on animation OLED with any alpha keypress
-        drawscull();
+        // oled_on(); // Handled in animation loop
+        // drawscull(); // Handled in animation loop
         } else if (timer_elapsed32(sleep_timer) < sleepTime) {
            screen_save();
       } else {
