@@ -181,6 +181,7 @@ static uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
 static bool jiggler_enable = false;
 
 // Matrix Rain Implementation
+#ifdef OLED_ENABLE
 #define DRAINS_COLS 21 // 128 pixels / 6px font width = 21.3
 #define DRAINS_ROWS 4  // 32 pixels / 8px font height
 // 127 will represent "inactive" or "off screen" safely above DRAINS_ROWS
@@ -265,7 +266,15 @@ static void draw_matrix(void) {
         }
     }
 }
+#endif
 
+
+
+void keyboard_post_init_user(void) {
+    #ifdef OLED_ENABLE
+    init_matrix();
+    #endif
+}
 
 // Macro set up: ref //https://getreuer.info/posts/keyboards/macros/index.html
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
@@ -277,10 +286,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         jiggler_token = INVALID_DEFERRED_TOKEN;
         report_mouse_t report = {0};
         host_mouse_send(&report);
-        #ifdef OLED_ENABLE
         oled_clear();
         init_matrix(); // Reset matrix to inactive state
-        #endif
     }
     
     // Typing rain trigger
@@ -293,8 +300,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         int col = rand() % DRAINS_COLS;
         matrix_drops[col] = 0; // Start at top
         matrix_col_chars[col] = charDrop;
-        matrix_speeds[col] = 3; // Fast drop for typing 
-        
+        matrix_speeds[col] = 2; // Fast drop for typing 
     }
     #endif
   }
@@ -341,11 +347,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 
 void matrix_scan_user(void) {
     if (jiggler_enable && jiggler_token == INVALID_DEFERRED_TOKEN) {
-        if (timer_elapsed32(sleep_timer) > 10) { // 2 minutes 2*60*1000
+        if (timer_elapsed32(sleep_timer) > 2*60*1000) { // 2 minutes 
              jiggler_token = defer_exec(1, jiggler_callback, NULL);
-             #ifdef OLED_ENABLE
              init_matrix();
-             #endif
         }
     }
 }
