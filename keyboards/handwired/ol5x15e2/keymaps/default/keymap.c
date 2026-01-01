@@ -162,10 +162,38 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #endif
 
 
+// Jiggler Callback (File Scope)
+static uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
+    static report_mouse_t report = {0};
+    // Deltas to move in a circle of radius 20 pixels over 32 frames.
+    static const int8_t deltas[32] = {
+        0, -1, -2, -2, -3, -3, -4, -4, -4, -4, -3, -3, -2, -2, -1, 0,
+        0, 1, 2, 2, 3, 3, 4, 4, 4, 4, 3, 3, 2, 2, 1, 0};
+    static uint8_t phase = 0;
+    // Get x delta from table and y delta by rotating a quarter cycle.
+    report.x = deltas[phase];
+    report.y = deltas[(phase + 8) & 31];
+    phase = (phase + 1) & 31;
+    host_mouse_send(&report);
+    return 16;  // Call the callback every 16 ms.
+}
+
+static bool jiggler_enable = false;
+
 // Macro set up: ref //https://getreuer.info/posts/keyboards/macros/index.html
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
   if (record->event.pressed) {
     sleep_timer = timer_read32();
+    // Stop jiggling on any keypress (wake up)
+    if (jiggler_token) {
+        cancel_deferred_exec(jiggler_token);
+        jiggler_token = INVALID_DEFERRED_TOKEN;
+        report_mouse_t report = {0};
+        host_mouse_send(&report);
+        #ifdef OLED_ENABLE
+        oled_clear();
+        #endif
+    }
   }
   switch (keycode) {
     case SELWORD:  // Selects the current word under the cursor.
@@ -198,42 +226,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             SEND_STRING(SS_LCTL(SS_TAP(X_UP) SS_TAP(X_LEFT)) SS_LSFT(SS_LCTL(SS_TAP(X_DOWN) SS_TAP(X_RIGHT))));
         }
             return false;
+    case JIGGLE:
+        if (record->event.pressed) {
+            jiggler_enable = !jiggler_enable;
+        }
+        return false;
     }
 
-    // https://getreuer.info/posts/keyboards/macros3/index.html#a-mouse-jiggler
-  if (record->event.pressed) {
-    // static deferred_token token = INVALID_DEFERRED_TOKEN; // Moved to global jiggler_token
-    static report_mouse_t report = {0};
-    if (jiggler_token) {
-      // If jiggler is currently running, stop when any key is pressed.
-      cancel_deferred_exec(jiggler_token);
-      jiggler_token = INVALID_DEFERRED_TOKEN;
-      report = (report_mouse_t){};  // Clear the mouse.
-      host_mouse_send(&report);
-      #ifdef OLED_ENABLE
-      oled_clear();
-      #endif
-    } else if (keycode == JIGGLE) {
-      uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
-        // Deltas to move in a circle of radius 20 pixels over 32 frames.
-        static const int8_t deltas[32] = {
-            0, -1, -2, -2, -3, -3, -4, -4, -4, -4, -3, -3, -2, -2, -1, 0,
-            0, 1, 2, 2, 3, 3, 4, 4, 4, 4, 3, 3, 2, 2, 1, 0};
-        static uint8_t phase = 0;
-        // Get x delta from table and y delta by rotating a quarter cycle.
-        report.x = deltas[phase];
-        report.y = deltas[(phase + 8) & 31];
-        phase = (phase + 1) & 31;
-        host_mouse_send(&report);
-        return 16;  // Call the callback every 16 ms.
-      }
-      jiggler_token = defer_exec(1, jiggler_callback, NULL);  // Schedule callback.
-      #ifdef OLED_ENABLE
-      init_matrix();
-      #endif
-    }
-  }
   return true;
+}
+
+void matrix_scan_user(void) {
+    if (jiggler_enable && jiggler_token == INVALID_DEFERRED_TOKEN) {
+        if (timer_elapsed32(sleep_timer) > 120000) { // 2 minutes
+             jiggler_token = defer_exec(1, jiggler_callback, NULL);
+             #ifdef OLED_ENABLE
+             init_matrix();
+             #endif
+        }
+    }
 }
   
 
@@ -276,8 +287,6 @@ static const char    GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
  static const char mouthOpen[] = {0xc0, 0xb0, 0xb1, 0xb2, 0xc4, 0}; // mouth
  static const char   vampire[] = {0xc0, 0xd0, 0xd1, 0xd2, 0xc4, 0}; // mouth
 
-//  static  uint32_t  sleep_timer = 0;
-//  static  uint32_t glitch_timer = 0;
 
  // Fade effect function
         const uint8_t single_bit_masks[8] = {127, 191, 223, 239, 247, 251, 253, 254}; //Setup some mask which can be or'd with bytes to turn off pixels
@@ -358,6 +367,10 @@ static const char    GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
         oled_set_cursor(8,2);
         oled_write(bigEyes, false);
     }
+    if (jiggler_enable) {
+        oled_set_cursor(0,3);
+        oled_write_char(0xCA, false);
+    }
  }
 
 
@@ -399,21 +412,28 @@ static const char    GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
 #define DRAINS_COLS 21 // 128 pixels / 6px font width = 21.3
 #define DRAINS_ROWS 4  // 32 pixels / 8px font height
 static int8_t matrix_drops[DRAINS_COLS];
+static uint8_t matrix_speeds[DRAINS_COLS];
 
 void init_matrix(void) {
     for (int i = 0; i < DRAINS_COLS; i++) {
         matrix_drops[i] = -(rand() % 20); // Start drops above screen randomly
+        matrix_speeds[i] = (rand() % 4) + 1; // Speed 1 (fast) to 4 (slow)
     }
 }
 
 static void update_matrix(void) {
+    static uint8_t tick = 0;
+    tick++;
     for (int i = 0; i < DRAINS_COLS; i++) {
-        // Advance drop
-        matrix_drops[i]++;
+        // Advance drop based on speed
+        if (tick % matrix_speeds[i] == 0) {
+            matrix_drops[i]++;
+        }
         
         // Reset if it fell off screen (height + tail length)
         if (matrix_drops[i] > DRAINS_ROWS + 10){
              matrix_drops[i] = -(rand() % 10);
+             matrix_speeds[i] = (rand() % 4) + 1; // Pick new speed
         }
     }
 }
@@ -441,14 +461,15 @@ static void draw_matrix(void) {
 
 
   bool oled_task_user(void) {
-    static  uint32_t saveTime = 5*60*1000; // 5 minutes
-    static  uint32_t sleepTime = 15*60*1000; // 10 minutes
+    static  uint32_t saveTime = 3*60*1000; // 3 minutes
+    static  uint32_t sleepTime = 15*60*1000; // 15 minutes
 
     if (jiggler_token != INVALID_DEFERRED_TOKEN) {
         static uint32_t matrix_timer = 0;
-        if (timer_elapsed32(matrix_timer) > 80) { // Faster update for smooth rain
+        if (timer_elapsed32(matrix_timer) > 120) { // Rain speed
             matrix_timer = timer_read32();
             update_matrix();
+            drawscull();
             draw_matrix();
         }
         return false;
