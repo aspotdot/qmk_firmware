@@ -73,9 +73,11 @@ enum custom_keycodes {
 };
 
 static deferred_token jiggler_token = INVALID_DEFERRED_TOKEN;
+static uint32_t sleep_timer = 0;
+static uint32_t glitch_timer = 0;
 
 #ifdef OLED_ENABLE
-void init_gol(void);
+void init_matrix(void);
 #endif
 
 
@@ -162,6 +164,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // Macro set up: ref //https://getreuer.info/posts/keyboards/macros/index.html
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+  if (record->event.pressed) {
+    sleep_timer = timer_read32();
+  }
   switch (keycode) {
     case SELWORD:  // Selects the current word under the cursor.
         if (record->event.pressed) {
@@ -205,6 +210,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
       jiggler_token = INVALID_DEFERRED_TOKEN;
       report = (report_mouse_t){};  // Clear the mouse.
       host_mouse_send(&report);
+      #ifdef OLED_ENABLE
+      oled_clear();
+      #endif
     } else if (keycode == JIGGLE) {
       uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
         // Deltas to move in a circle of radius 20 pixels over 32 frames.
@@ -221,7 +229,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
       }
       jiggler_token = defer_exec(1, jiggler_callback, NULL);  // Schedule callback.
       #ifdef OLED_ENABLE
-      init_gol();
+      init_matrix();
       #endif
     }
   }
@@ -268,8 +276,8 @@ static const char    GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
  static const char mouthOpen[] = {0xc0, 0xb0, 0xb1, 0xb2, 0xc4, 0}; // mouth
  static const char   vampire[] = {0xc0, 0xd0, 0xd1, 0xd2, 0xc4, 0}; // mouth
 
- static  uint32_t sleep_timer = 0;
- static  uint32_t glitch_timer = 0;
+//  static  uint32_t  sleep_timer = 0;
+//  static  uint32_t glitch_timer = 0;
 
  // Fade effect function
         const uint8_t single_bit_masks[8] = {127, 191, 223, 239, 247, 251, 253, 254}; //Setup some mask which can be or'd with bytes to turn off pixels
@@ -298,7 +306,7 @@ static const char    GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
   }
 
 
- void drawscreen(void) {
+ void drawscull(void) {
     // draw top
     oled_set_cursor(8,1);
     switch (get_highest_layer(layer_state)) {
@@ -386,68 +394,50 @@ static const char    GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
            }
          }
 
-// Game of Life Implementation
-#define GOL_W 64 // 128 / 2
-#define GOL_H 16 // 32 / 2
-static uint8_t gol_grid[GOL_H][GOL_W / 8];
-static uint8_t gol_next[GOL_H][GOL_W / 8];
 
-static void set_gol(uint8_t grid[GOL_H][GOL_W / 8], int x, int y, bool v) {
-    if (x < 0 || x >= GOL_W || y < 0 || y >= GOL_H) return;
-    if (v) grid[y][x/8] |= (1<<(x%8));
-    else   grid[y][x/8] &= ~(1<<(x%8));
+// Matrix Rain Implementation
+#define DRAINS_COLS 21 // 128 pixels / 6px font width = 21.3
+#define DRAINS_ROWS 4  // 32 pixels / 8px font height
+static int8_t matrix_drops[DRAINS_COLS];
+
+void init_matrix(void) {
+    for (int i = 0; i < DRAINS_COLS; i++) {
+        matrix_drops[i] = -(rand() % 20); // Start drops above screen randomly
+    }
 }
 
-static bool get_gol(uint8_t grid[GOL_H][GOL_W / 8], int x, int y) {
-    if (x < 0 || x >= GOL_W || y < 0 || y >= GOL_H) return false;
-    return (grid[y][x/8] >> (x%8)) & 1;
-}
-
-void init_gol(void) {
-    for(int y=0; y<GOL_H; y++) {
-        for(int x=0; x<GOL_W/8; x++) {
-            gol_grid[y][x] = rand();
+static void update_matrix(void) {
+    for (int i = 0; i < DRAINS_COLS; i++) {
+        // Advance drop
+        matrix_drops[i]++;
+        
+        // Reset if it fell off screen (height + tail length)
+        if (matrix_drops[i] > DRAINS_ROWS + 10){
+             matrix_drops[i] = -(rand() % 10);
         }
     }
 }
 
-static void update_gol(void) {
-    for (int y = 0; y < GOL_H; y++) {
-        for (int x = 0; x < GOL_W; x++) {
-            int n = 0;
-            // Limit dy to 0 to prevent upward propagation (cells only influenced by above and same row)
-            for (int dy = -1; dy <= 0; dy++) {
-                for (int dx = -1; dx <= 1; dx++) {
-                    if ((dx || dy) && get_gol(gol_grid, x+dx, y+dy)) n++;
-                }
-            }
-            bool alive = get_gol(gol_grid, x, y);
-            // Rules: Alive & 2-3 neighbors -> Alive. Dead & 3 neighbors -> Alive.
-            set_gol(gol_next, x, y, (alive && n == 2) || n == 3);
+static void draw_matrix(void) {
+    for (int col = 0; col < DRAINS_COLS; col++) {
+        int head = matrix_drops[col];
+        int x = col * 6;
+        
+        if (head >= 0 && head < DRAINS_ROWS) {
+            oled_set_cursor(x / 6, head); // Column is in chars, Row is in chars
+            unsigned char r = 0x01 + (rand() % (0xDF - 0x01));
+            oled_write_char(r, false);
+        }
+        // Erase trail (very simple single-falling-char effect for now, 
+        // essentially the "drop" is length 1. To make it a trail, we check positions above head)
+        // Let's make a trail of length 4
+        int tail_end = head - 4;
+        if (tail_end >= 0 && tail_end < DRAINS_ROWS) {
+             oled_set_cursor(x / 6, tail_end);
+             oled_write_char(' ', false);
         }
     }
-    memcpy(gol_grid, gol_next, sizeof(gol_grid));
 }
-
-static void draw_gol_oled(void) {
-    // Draw 64x16 grid scaled to 128x32
-    for (uint16_t i = 0; i < 512; ++i) { // 128 columns * 4 pages
-        uint8_t col = i % 128;
-        uint8_t page = i / 128; // 0..3
-        uint8_t byte = 0;
-        int gx = col / 2;
-        // Each page covers 8 vertical pixels. GOL cells are 2x2.
-        // So this byte covers 4 GOL rows: (page*4) through (page*4 + 3)
-        for (int r = 0; r < 4; r++) { 
-            if (get_gol(gol_grid, gx, page * 4 + r)) {
-                // Set the 2 bits corresponding to this GOL cell
-                byte |= (3 << (2 * r));
-            }
-        }
-        oled_write_raw_byte(byte, i);
-    }
-}
-
 
 
   bool oled_task_user(void) {
@@ -455,19 +445,19 @@ static void draw_gol_oled(void) {
     static  uint32_t sleepTime = 15*60*1000; // 10 minutes
 
     if (jiggler_token != INVALID_DEFERRED_TOKEN) {
-        static uint32_t gol_timer = 0;
-        if (timer_elapsed32(gol_timer) > 100) {
-            gol_timer = timer_read32();
-            update_gol();
-            draw_gol_oled();
+        static uint32_t matrix_timer = 0;
+        if (timer_elapsed32(matrix_timer) > 80) { // Faster update for smooth rain
+            matrix_timer = timer_read32();
+            update_matrix();
+            draw_matrix();
         }
         return false;
     }
 
-    if(get_current_wpm() != 000 && sleep_timer < saveTime) {
+    if(timer_elapsed32(sleep_timer) < saveTime) {
         oled_on(); // not essential but turns on animation OLED with any alpha keypress
-        drawscreen();
-        } else if (timer_elapsed32(sleep_timer) > saveTime && timer_elapsed32(sleep_timer) < sleepTime) {
+        drawscull();
+        } else if (timer_elapsed32(sleep_timer) < sleepTime) {
            screen_save();
       } else {
          fade_display();
