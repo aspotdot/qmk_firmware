@@ -238,7 +238,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 
 void matrix_scan_user(void) {
     if (jiggler_enable && jiggler_token == INVALID_DEFERRED_TOKEN) {
-        if (timer_elapsed32(sleep_timer) > 120000) { // 2 minutes
+        if (timer_elapsed32(sleep_timer) > 2*60*1000) { // 2 minutes
              jiggler_token = defer_exec(1, jiggler_callback, NULL);
              #ifdef OLED_ENABLE
              init_matrix();
@@ -370,6 +370,9 @@ static const char    GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
     if (jiggler_enable) {
         oled_set_cursor(0,3);
         oled_write_char(0xCA, false);
+    } else {
+        oled_set_cursor(0,3);
+        oled_write_char(' ', false);
     }
  }
 
