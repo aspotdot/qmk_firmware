@@ -77,7 +77,7 @@ static uint32_t sleep_timer = 0;
 static uint32_t glitch_timer = 0;
 
 #ifdef OLED_ENABLE
-void init_matrix(void);
+void init_matrixAni(void);
 #endif
 
 
@@ -182,35 +182,35 @@ static bool jiggler_enable = false;
 
 // Matrix Rain Implementation
 #ifdef OLED_ENABLE
-#define DRAINS_COLS 21 // 128 pixels / 6px font width = 21.3
-#define DRAINS_ROWS 4  // 32 pixels / 8px font height
-// 127 will represent "inactive" or "off screen" safely above DRAINS_ROWS
-static int8_t matrix_drops[DRAINS_COLS];
-static uint8_t matrix_speeds[DRAINS_COLS];
-static char matrix_col_chars[DRAINS_COLS];
+    #define DRAINS_COLS 21 // 128 pixels / 6px font width = 21.3
+    #define DRAINS_ROWS 4  // 32 pixels / 8px font height
+    // 127 will represent "inactive" or "off screen" safely above DRAINS_ROWS
+    static int8_t matrix_drops[DRAINS_COLS];
+    static uint8_t matrix_speeds[DRAINS_COLS];
+    static char matrix_col_chars[DRAINS_COLS];
 
-void init_matrix(void) {
-    for (int i = 0; i < DRAINS_COLS; i++) {
-        matrix_drops[i] = 127; // Start inactive
-        matrix_col_chars[i] = 0x01 + (rand() % (0xDF - 0x01)); 
-    }
-}
-
-static void update_matrix(void) {
-    static uint8_t tick = 0;
-    tick++;
-    for (int i = 0; i < DRAINS_COLS; i++) {
-        // Only advance if active (not 127)
-        if (matrix_drops[i] != 127) {
-             // Advance drop based on speed
-            if (tick % matrix_speeds[i] == 0) {
-                matrix_drops[i]++;
-            }
+    void init_matrixAni(void) {
+        for (int i = 0; i < DRAINS_COLS; i++) {
+            matrix_drops[i] = 127; // Start inactive
+            matrix_col_chars[i] = 0x01 + (rand() % (0xDF - 0x01)); 
         }
+    }
+
+    static void update_matrix(void) {
+        static uint8_t tick = 0;
+        tick++;
+        for (int i = 0; i < DRAINS_COLS; i++) {
+            // Only advance if active (not 127)
+            if (matrix_drops[i] != 127) {
+                 // Advance drop based on speed
+                if (tick % matrix_speeds[i] == 0) {
+                    matrix_drops[i]++;
+                }
+            }
         
         // Reset if it fell off screen (height + tail length)
         // OR if it's inactive (127) and Jiggler is ON, we might want to start it?
-        // Actually, init_matrix handles the start. Here we just handle the loop.
+        // Actually, init_matrixAni handles the start. Here we just handle the loop.
         
         if (matrix_drops[i] > DRAINS_ROWS + 4) {
              if (jiggler_token != INVALID_DEFERRED_TOKEN) {
@@ -272,7 +272,7 @@ static void draw_matrix(void) {
 
 void keyboard_post_init_user(void) {
     #ifdef OLED_ENABLE
-    init_matrix();
+    init_matrixAni();
     #endif
 }
 
@@ -287,7 +287,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         report_mouse_t report = {0};
         host_mouse_send(&report);
         oled_clear();
-        init_matrix(); // Reset matrix to inactive state
+        init_matrixAni(); // Reset matrix to inactive state
     }
     
     // Typing rain trigger
@@ -349,7 +349,7 @@ void matrix_scan_user(void) {
     if (jiggler_enable && jiggler_token == INVALID_DEFERRED_TOKEN) {
         if (timer_elapsed32(sleep_timer) > 2*60*1000) { // 2 minutes 
              jiggler_token = defer_exec(1, jiggler_callback, NULL);
-             init_matrix();
+             init_matrixAni();
         }
     }
 }
