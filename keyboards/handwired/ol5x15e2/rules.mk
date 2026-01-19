@@ -15,6 +15,7 @@ WPM_ENABLE = yes
 CAPS_WORD_ENABLE = yes
 UNICODE_COMMON = yes
 DEFERRED_EXEC_ENABLE = yes
+SRC += rpn_calc.c oled.c
 
 AUDIO_ENABLE = no
 

@@ -67,35 +67,35 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     └─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
 */
     [_00] = LAYOUT_ortho_5x6(
-    KC_TAB, KC_HOME, KC_DEL, KC_ESC,  XXXXXXX, KC_TAB,
-    KC_P7,  KC_P8,   KC_P9,  KC_SLSH, MS_BTN2, MS_BTN2,
-    KC_P4,  KC_P5,   KC_P6,  KC_ASTR, MO(_XL), KC_LSFT,
-    KC_P1,  KC_P2,   KC_P3,  KC_PLUS, MS_BTN1, KC_LCTL,
-    KC_P0,  KC_PDOT, ENT_FN, SPC_MO,  KC_S,    MS_BTN3
+    KC_PSCR, KC_HOME, KC_DEL, KC_ESC , XXXXXXX, KC_TAB ,
+    KC_P7  , KC_P8  , KC_P9 , KC_SLSH, MS_BTN2, MS_BTN2,
+    KC_P4  , KC_P5  , KC_P6 , KC_ASTR, MO(_XL), KC_LSFT,
+    KC_P1  , KC_P2  , KC_P3 , KC_PLUS, MS_BTN1, KC_LCTL,
+    KC_P0  , KC_PDOT, ENT_FN, SPC_MO,  KC_S   , MS_BTN3
     ),
 
     [_MO] = LAYOUT_ortho_5x6(
-    _______, KC_END,  KC_DEL,  C(KC_Z), XXXXXXX, _______,
-    KC_PGDN, KC_UP,   KC_PGUP, C(KC_V), _______, _______,
-    KC_LEFT, KC_DOWN, KC_RGHT, C(KC_C), KC_R,    _______,
-    _______, SC_DOWN, SC_RGHT, C(KC_X), _______, _______,
-    KC_SPC,  KC_PDOT, KC_EQL,  XXXXXXX, _______, _______
+    XXXXXXX, KC_END , XXXXXXX, C(KC_Z), XXXXXXX, _______,
+    KC_PGDN, KC_UP  , KC_PGUP, C(KC_C), _______, _______,
+    KC_LEFT, KC_DOWN, KC_RGHT, C(KC_V), _______, _______,
+    XXXXXXX, S_DOWN , S_RGHT , C(KC_X), _______, _______,
+    XXXXXXX, SC_DOWN, SC_RGHT, KC_NO  , KC_R   , _______
     ),
 
     [_FN] = LAYOUT_ortho_5x6(
-    KC_F10,  KC_F11,  KC_F12,  _______, XXXXXXX, _______,
-    KC_F7,   KC_F8,   KC_F9,   _______, _______, _______,
-    KC_F4,   KC_F5,   KC_F6,   _______, _______, _______,
-    KC_F1,   KC_F2,   KC_F3,   _______, _______, _______,
-    _______, _______, XXXXXXX, _______, _______, _______
+    KC_F10 , KC_F11 , KC_F12 , _______, XXXXXXX, _______,
+    KC_F7  , KC_F8  , KC_F9  , _______, _______, _______,
+    KC_F4  , KC_F5  , KC_F6  , _______, _______, _______,
+    KC_F1  , KC_F2  , KC_F3  , _______, _______, _______,
+    _______, _______, KC_NO  , _______, _______, _______
     ),
 
     [_XL] = LAYOUT_ortho_5x6(
     _______, _______, _______, _______, XXXXXXX, _______,
     _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, XXXXXXX, _______,
-    _______, _______, _______, _______, _______, _______,
-    KC_LPRN, KC_RPRN, KC_EQL,  _______, _______, _______
+    _______, _______, KC_COMM, _______, _______, _______,
+    KC_LPRN, KC_RPRN, KC_EQL , _______, _______, _______
     )
   };
 
