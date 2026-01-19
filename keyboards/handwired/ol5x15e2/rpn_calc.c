@@ -132,6 +132,7 @@ int precision_uncert = 4;
 // Helper Functions (Stack & Logic)
 // --------------------------------------------------------------------------
 
+// CL_CLRS
 void clear_stack(void) {
 	stack[0] = 0.; stack2[0] = 0.;
 	lastx = 0.; lastx2 = 0.;
@@ -165,6 +166,7 @@ void stack_push(double num, double err) {
 	stack2[0] = err;
 }
 
+
 void stack_drop(void) {
 	if (stack_size>0) {
 		stack_size--;
@@ -175,6 +177,7 @@ void stack_drop(void) {
         stack[stack_size] = 0; // Clear visible residue
 	}
 }
+
 
 void stack_rotate_up(void) {
     if (stack_size < 2) return;
@@ -339,30 +342,6 @@ void calc_init(void) {
     set_trigconv();
 }
 
-enum custom_keycodes {
-  CL_OUT ,
-  CL_CLRS, 
-  CL_INV , 
-  CL_SIN , 
-  CL_ASIN, 
-  CL_LN  , 
-  CL_CLRX, 
-  CL_PI  , 
-  CL_COS , 
-  CL_ACOS, 
-  CL_LOG , 
-  CL_XxY , 
-  CL_SQRT, 
-  CL_TAN , 
-  CL_ATAN, 
-  CL_ABS ,
-  CL_ENT ,
-  CL_SQ 
-};
-
-
-
-
 
 bool calc_handle_key(uint16_t keycode) {
     // Map QMK Keycodes to Internal Functions
@@ -382,18 +361,24 @@ bool calc_handle_key(uint16_t keycode) {
         case KC_PDOT:
             enter_decpoint(); return true;
         case KC_BSPC: 
+        case CL_BKS:
             enter_backspace(); return true;
         case CL_ENT: 
             enter_enter(); return true;
             
+        case CL_PLUS:
         case KC_PLUS: 
         case KC_PPLS: apply_op(OP_PLUS); return true;
+        case CL_MINS:
         case KC_MINS: 
         case KC_PMNS: apply_op(OP_MINUS); return true;
+        case CL_MULT:
         case KC_ASTR: 
         case KC_PAST: apply_op(OP_MULT); return true;
+        case CL_DIV:
         case KC_SLSH: 
         case KC_PSLS: apply_op(OP_DIV); return true;
+        case CL_POW:
         case KC_CIRC: apply_op(OP_POW); return true;
         
         default: return false; 
@@ -409,10 +394,24 @@ void calc_output_result(void) {
     maybe_convert_input();
     if (stack_size > 0) {
         char buf[32];
-        // Simple float output
+        // Simple float output manual conversion (printf float not supported)
         int i_part = (int)stack[0];
-        int f_part = (int)(fabs(stack[0] - i_part) * 10000);
+        int f_part = (int)(fabs(stack[0] - i_part) * 10000 + 0.5); // +0.5 for rounding
         snprintf(buf, sizeof(buf), "%s%d.%04d", (stack[0]<0 && i_part==0)?"-":"", i_part, f_part);
+        
+        // Remove trailing zeros
+        int len = strlen(buf);
+        while (len > 0) {
+            if (buf[len-1] == '0') {
+                buf[len-1] = '\0';
+                len--;
+            } else if (buf[len-1] == '.') {
+                buf[len-1] = '\0'; // Remove the decimal point itself if no decimals remain
+                break;
+            } else {
+                break;
+            }
+        }
         send_string(buf);
     }
 }
@@ -423,9 +422,25 @@ void calc_output_result(void) {
 // --------------------------------------------------------------------------
 
 void format_number(double num, char *buffer) {
-    // Basic formatting for now. 
-    // We will stick to a reasonable default: %.5g
-    snprintf(buffer, 21, "%.5g", num); 
+    int i_part = (int)num;
+    int f_part = (int)(fabs(num - i_part) * 10000 + 0.5); 
+    char temp[32];
+    snprintf(temp, sizeof(temp), "%s%d.%04d", (num<0 && i_part==0)?"-":"", i_part, f_part);
+    
+    // Trim zeros
+    int len = strlen(temp);
+    while (len > 0) {
+        if (temp[len-1] == '0') {
+            temp[len-1] = '\0';
+            len--;
+        } else if (temp[len-1] == '.') {
+            temp[len-1] = '\0';
+            break;
+        } else {
+            break;
+        }
+    }
+    strncpy(buffer, temp, 21);
 }
 
 void calc_get_line(uint8_t line, char *buffer) {
@@ -434,37 +449,43 @@ void calc_get_line(uint8_t line, char *buffer) {
     // Line 2: Z
     // Line 3: T
     
+    char temp[22];
     if (line == 0) {
         if (input.started) {
             // Render Input Buffer
             int p = 0;
-            if(input.sign) buffer[p++] = '-';
+            if(input.sign) temp[p++] = '-';
             for (int i=0; i<input.mpos; i++) {
-                buffer[p++] = input.mantissa[i] + '0';
-                if (input.point > 0 && (i+1) == input.point) buffer[p++] = '.';
+                temp[p++] = input.mantissa[i] + '0';
+                if (input.point > 0 && (i+1) == input.point) temp[p++] = '.';
             }
-            if (input.point == 0) buffer[p++] = '_'; // Cursor
-            buffer[p] = '\0';
+            if (input.point == 0) temp[p++] = '_'; // Cursor
+            temp[p] = '\0';
         } else {
             // Render X
             if (stack_size > 0) {
                 char nb[20];
                 format_number(stack[0], nb);
-                snprintf(buffer, 22, "X: %s", nb);
+                snprintf(temp, 22, "X: %s", nb);
             } else {
-                strcpy(buffer, "X: 0");
+                strcpy(temp, "X: 0");
             }
         }
     } else {
         // Stack Lines
-        int idx = line; // 1->Y(stack[1]), 2->Z(stack[2]), 3->T(stack[3])
-        if (idx < stack_size) {
-            char nb[20];
-            format_number(stack[idx], nb);
-            char reg = (idx==1)?'Y':(idx==2)?'Z':(idx==3)?'T':('0'+idx);
-            snprintf(buffer, 22, "%c: %s", reg, nb);
-        } else {
-            buffer[0] = '\0'; // Empty line
-        }
+        int idx = line; // 1->Y, 2->Z, 3->T
+        // Ensure we always show values, even if stack is empty (default 0)
+        double val = (idx < MAX_STACK_SIZE) ? stack[idx] : 0;
+        char nb[20];
+        format_number(val, nb);
+        char reg = (idx==1)?'Y':(idx==2)?'Z':(idx==3)?'T':('0'+idx);
+        snprintf(temp, 22, "%c: %s", reg, nb);
     }
+    
+    // Pad with spaces to clear line (OLED width ~21 chars)
+    int len = strlen(temp);
+    memset(buffer, ' ', 21);
+    buffer[21] = '\0';
+    if (len > 21) len = 21;
+    memcpy(buffer, temp, len);
 }

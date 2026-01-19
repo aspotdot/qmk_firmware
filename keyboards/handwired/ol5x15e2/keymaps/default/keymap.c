@@ -73,18 +73,7 @@ enum custom_keycodes {
   KY_DIA ,
   KY_PLMN,
   KY_XLSL,
-  JIGGLE ,
-
-  CL_OUT , CL_ENT ,
-  CL_CLRS, CL_CLRX, CL_XxY , 
-  CL_LOG , CL_LN  ,
-  CL_PI  , CL_CE  ,
-  CL_SIN , CL_ASIN,
-  CL_COS , CL_ACOS,
-  CL_TAN , CL_ATAN,
-  CL_SQ  , CL_SQRT, CL_XtY ,
-  CL_INV , CL_ABS ,
-  CL_1   , CL_2   , CL_3   , CL_4   , CL_5   , CL_6   , CL_7   , CL_8   , CL_9   , CL_0   , CL_DOT
+  JIGGLE
 };
 
 static deferred_token jiggler_token = INVALID_DEFERRED_TOKEN;
@@ -147,15 +136,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_LCTL, KC_K   , XXXXXXX, XXXXXXX, MS_BTN2, KC_SPC , KC_P0  , _______, _______, _______, _______, _______, _______, _______, _______),
 
     [_CL] = LAYOUT_ortho_5x15(
-    _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, CL_CLRS, KC_PPLS, KC_PMNS, KC_PSLS, KC_PAST, CL_INV , XXXXXXX, XXXXXXX, _______, _______,
-    TO(_QT), XXXXXXX, CL_SIN , CL_ASIN, CL_LN  , CL_CLRX, CL_7   , CL_8   , CL_9   , KC_CIRC, CL_PI  , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, CL_CLRS, CL_PLUS, CL_MINS, CL_DIV , CL_MULT, CL_INV , XXXXXXX, XXXXXXX, _______, _______,
+    TO(_QT), XXXXXXX, CL_SIN , CL_ASIN, CL_LN  , CL_CLRX, CL_7   , CL_8   , CL_9   , CL_POW , CL_PI  , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
     XXXXXXX, XXXXXXX, CL_COS , CL_ACOS, CL_LOG , CL_XxY , CL_4   , CL_5   , CL_6   , CL_SQRT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
     XXXXXXX, XXXXXXX, CL_TAN , CL_ATAN, CL_ABS , CL_INV , CL_1   , CL_2   , CL_3   , CL_SQ  , CL_XtY , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, CL_OUT , CL_0   , CL_DOT , CL_ENT , CL_OUT , KC_PENT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX)
+    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, CL_BKS , CL_0   , CL_DOT , CL_ENT , CL_OUT , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX)
 
   };
- 
- 
+
+  
  
  
  
