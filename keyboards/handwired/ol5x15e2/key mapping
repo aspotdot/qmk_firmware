@@ -1,0 +1,136 @@
+Keycode to OLED Font Map
+This table shows how QMK Keycodes map to the index in the 
+glcdfont_as.c
+ font file, based on the code_to_name array in 
+oled.c
+.
+
+Index 	Keycode 	    Value 	    Value 	    Description/Glyph
+(Hex)   (Approx)        (Dec)      (Char/Hex)  
+0x00	KC_NO   	    182 	    0xB6	    (Custom)
+0x01	KC_ROLL_OVER    32  	    ' '	    Space (Ignored)
+0x02	KC_POST_FAIL    32  	    ' '	    Space (Ignored)
+0x03	KC_UNDEFINED    32  	    ' '	    Space (Ignored)
+0x04	KC_A    	    97  	    'a'	    a
+0x05	KC_B    	    98  	    'b'	    b
+0x06	KC_C    	    99  	    'c'	    c
+0x07	KC_D    	    100 	    'd'	    d
+0x08	KC_E    	    101 	    'e'	    e
+0x09	KC_F    	    102 	    'f'	    f
+0x0A	KC_G    	    103 	    'g'	    g
+0x0B	KC_H    	    104 	    'h'	    h
+0x0C	KC_I    	    105 	    'i'	    i
+0x0D	KC_J    	    106 	    'j'	    j
+0x0E	KC_K    	    107 	    'k'	    k
+0x0F	KC_L    	    108 	    'l'	    l
+0x10	KC_M    	    109 	    'm'	    m
+0x11	KC_N    	    110 	    'n'	    n
+0x12	KC_O    	    111 	    'o'	    o
+0x13	KC_P    	    112 	    'p'	    p
+0x14	KC_Q    	    113 	    'q'	    q
+0x15	KC_R    	    114 	    'r'	    r
+0x16	KC_S    	    115 	    's'	    s
+0x17	KC_T    	    116 	    't'	    t
+0x18	KC_U    	    117 	    'u'	    u
+0x19	KC_V    	    118 	    'v'	    v
+0x1A	KC_W    	    119 	    'w'	    w
+0x1B	KC_X    	    120 	    'x'	    x
+0x1C	KC_Y    	    121 	    'y'	    y
+0x1D	KC_Z    	    122 	    'z'	    z
+0x1E	KC_1    	    49   	    '1'	    1
+0x1F	KC_2    	    50 	        '2'	    2
+0x20	KC_3        	51  	    '3'	    3
+0x21	KC_4        	52      	'4' 	4
+0x22	KC_5        	53      	'5' 	5
+0x23	KC_6        	54      	'6' 	6
+0x24	KC_7        	55      	'7' 	7
+0x25	KC_8        	56      	'8' 	8
+0x26	KC_9        	57      	'9' 	9
+0x27	KC_0        	48      	'0' 	0
+0x28	KC_ENTER    	20      	0x14	(Custom)
+0x29	KC_ESCAPE   	19      	0x13	(Custom)
+0x2A	KC_BSPACE   	17      	0x11	(Custom)
+0x2B	KC_TAB      	29      	0x1D	(Custom)
+0x2C	KC_SPACE    	22      	0x16	(Custom)
+0x2D	KC_MINUS    	45      	'-' 	-
+0x2E	KC_EQUAL    	61      	'=' 	=
+0x2F	KC_LBRACKET 	91      	'[' 	[
+0x30	KC_RBRACKET	    93      	']' 	]
+0x31	KC_BSLASH   	92      	'\' 	\
+0x32	KC_NONUS_HASH	35      	'#' 	#
+0x33	KC_SCOLON   	59      	';' 	;
+0x34	KC_QUOTE    	39      	''' 	'
+0x35	KC_GRAVE    	96      	'`' 	`
+0x36	KC_COMMA    	44      	',' 	,
+0x37	KC_DOT      	46      	'.' 	.
+0x38	KC_SLASH    	47      	'/' 	/
+0x39	KC_CAPSLOCK 	188     	0xBC	(Custom)
+0x3A	KC_F1       	149     	0x95	(Custom)
+0x3B	KC_F2       	150     	0x96	(Custom)
+0x3C	KC_F3       	151     	0x97	(Custom)
+0x3D	KC_F4       	152     	0x98	(Custom)
+0x3E	KC_F5       	153     	0x99	(Custom)
+0x3F	KC_F6       	154     	0x9A	(Custom)
+0x40	KC_F7       	155     	0x9B	(Custom)
+0x41	KC_F8       	156     	0x9C	(Custom)
+0x42	KC_F9       	157     	0x9D	(Custom)
+0x43	KC_F10      	158     	0x9E	(Custom)
+0x44	KC_F11      	159     	0x9F	(Custom)
+0x45	KC_F12      	181     	0xB5	(Custom)
+0x46	KC_PSCREEN    	191     	0xBF	(Custom)
+0x47	KC_SCROLLLOCK 	190     	0xBE	(Custom)
+0x48	KC_PAUSE    	32      	' '	Space (Ignored)
+0x49	KC_INSERT   	32      	' '	Space (Ignored)
+0x4A	KC_HOME     	185     	0xB9	(Custom)
+0x4B	KC_PGUP     	183     	0xB7	(Custom)
+0x4C	KC_DELETE   	16      	0x10	(Custom)
+0x4D	KC_END      	186     	0xBA	(Custom)
+0x4E	KC_PGDOWN   	184     	0xB8	(Custom)
+0x4F	KC_RIGHT    	26      	0x1A	(Custom - Arrow?)
+0x50	KC_LEFT     	27      	0x1B	(Custom - Arrow?)
+0x51	KC_DOWN     	25      	0x19	(Custom - Arrow?)
+0x52	KC_UP       	24      	0x18	(Custom - Arrow?)
+0x53	KC_NUMLOCK  	189     	0xBD	(Custom)
+0x54	KC_KP_SLASH  	47      	'/' 	/
+0x55	KC_KP_ASTERISK 	42      	'*' 	*
+0x56	KC_KP_MINUS  	45      	'-' 	-
+0x57	KC_KP_PLUS   	43      	'+' 	+
+0x58	KC_KP_ENTER  	32      	' ' 	Space (Ignored)
+0x59	KC_KP_1      	49      	'1'	    1
+0x5A	KC_KP_2      	50      	'2'	    2
+0x5B	KC_KP_3      	51      	'3'	    3
+0x5C	KC_KP_4      	52      	'4'	    4
+0x5D	KC_KP_5      	53      	'5'	    5
+0x5E	KC_KP_6      	54      	'6'	    6
+0x5F	KC_KP_7      	55      	'7'	    7
+0x60	KC_KP_8      	56      	'8'	    8
+0x61	KC_KP_9      	57      	'9'	    9
+0x62	KC_KP_0      	48      	'0'	    0
+0x63	KC_KP_DOT    	46      	'.'	    .
+0x64	KC_NONUS_BSLASH 32      	' '	    Space (Ignored)
+0x65	KC_APPLICATION 	187      	0xBB	(Custom)
+0xA8	KC_MUTE      	214      	0xD6	(Custom - Mute?)
+0xA9	KC_VOLUP     	215      	0xD7	(Custom - VolUp?)
+0xAA	KC_VOLDOWN   	216      	0xD8	(Custom - VolDn?)
+0xAB	KC_MNXT      	217      	0xD9	(Custom - Next?)
+0xAC	KC_MPRV      	218      	0xDA	(Custom - Prev?)
+0xAD	KC_MSTP      	219      	0xDB	(Custom - Stop?)
+0xAE	KC_MPLY      	220      	0xDC	(Custom - Play?)
+0xAF	KC_MSEL      	221      	0xDD	(Custom - Select?)
+0xB2	KC_CALCULATOR  	213      	0xD5	(Custom - Calc?)
+0xE0	KC_LCTRL      	67       	'C'   	C
+0xE1	KC_LSHIFT     	83       	'S'   	S
+0xE2	KC_LALT       	65       	'A'   	A
+0xE3	KC_LGUI       	87       	'W'   	W
+0xE5	KC_RSHIFT     	83       	'S'   	S
+
+
+Note: Indices 0x66-0xA7 and 0xB3-0xDF are explicitly empty spaces (' ') in the code.
+
+Important Notes:
+Indices > 127 (0x7F): These point to the "upper half" of the ASCII table involved in 
+glcdfont_as.c
+, which typically contains custom icons (modifiers, system icons, logos).
+' ' (Space): Entries mapped to 32 (' ') are seemingly ignored by the 
+trigger_matrix_rain
+ function.

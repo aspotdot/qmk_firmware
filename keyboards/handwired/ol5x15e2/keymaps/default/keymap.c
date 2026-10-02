@@ -81,9 +81,6 @@ static uint32_t  sleep_timer = 0;
 
 
 
-//?
-
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_QT] = LAYOUT_ortho_5x15(
@@ -94,21 +91,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     LCTL_BR, KC_LALT, KC_LGUI, MO(_FN), MO(_MO), KC_BSPC, SH_0   , NM_DOT , KC_PENT, KC_SPC , MO(_MO), MO(_FN), KC_RGUI, KC_RALT, RCTL_BR),
 
     [_FN] = LAYOUT_ortho_5x15(
-    TG(_GM),  JIGGLE, _______, _______,  CA_ESC, _______, KC_F10 ,  KC_F11,  KC_F12, _______, _______, _______, _______, _______, AU_TOGG,
-    SRCHSEL, _______,  WN_FLL, _______, _______, _______, KC_F7  ,   KC_F8,   KC_F9, _______, _______, _______, _______, _______,  TO(_QT),
+    TG(_GM), JIGGLE , KC_PSCR, _______,  CA_ESC, _______, KC_F10 ,  KC_F11,  KC_F12, _______, _______, _______, DM_REC1, _______, AU_TOGG,
+    SRCHSEL, WN_MAX ,  WN_FLL, _______, _______, _______, KC_F7  ,   KC_F8,   KC_F9, _______, _______, _______, _______, _______,  TO(_QT),
     SELWORD,   WIN_L,  WN_MON,   WIN_R, _______, _______, KC_F4  ,   KC_F5,   KC_F6, _______, _______, _______, _______, _______,  TO(_CM),
-    _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), _______, KC_F2  ,   KC_F3, _______, _______, _______, _______, _______, _______,  TO(_CN),
-    _______, _______, _______, KC_TRNS, _______, _______, _______, _______, _______, KC_UNDS, _______, KC_TRNS, TO(_CL), _______, _______),
+    _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), _______, KC_F1  ,   KC_F2,   KC_F3, _______, _______, _______, _______, _______,  TO(_CN),
+    _______, _______, _______, KC_TRNS, _______, _______, _______, TO(_CL), _______, KC_UNDS, _______, KC_TRNS, _______, _______, _______),
 
     [_MO] = LAYOUT_ortho_5x15(
-    _______, _______, _______, SC_UP  , _______, _______, KC_HOME, SC_UP  , KC_END  , _______, _______, MS_BTN1, DM_REC1, _______, _______,
-    _______, _______, KC_PGDN, KC_UP  , KC_PGUP, _______, KC_PGDN, KC_UP  , KC_PGUP , _______, MS_WHLL, MS_UP  , MS_WHLR, MS_WHLU, _______,
-    _______, _______, KC_LEFT, KC_DOWN, KC_RIGHT, S_RGHT, KC_LEFT, KC_DOWN, KC_RIGHT, _______, MS_LEFT, MS_DOWN, MS_RGHT, MS_WHLD, _______,
-    _______, _______, KY_XLSL, S_DOWN , _______, SC_RGHT, S_LEFT , S_DOWN , S_RGHT  , _______, MS_BTN1, _______, _______, _______, _______,
-    _______, _______, _______, SC_DOWN, KC_TRNS, _______, SC_LEFT, SC_DOWN, SC_RGHT , _______, KC_TRNS, _______, _______, _______, _______),
+    _______, _______, KC_END , SC_UP  , KC_HOME , KY_XLSL, KC_HOME, SC_UP  , KC_END  , _______, _______, MS_BTN1, _______, _______, _______,
+    KC_INS , _______, KC_PGDN, KC_UP  , KC_PGUP , _______, KC_PGDN, KC_UP  , KC_PGUP , _______, MS_WHLL, MS_UP  , MS_WHLR, MS_WHLU, _______,
+    _______, S_LEFT , KC_LEFT, KC_DOWN, KC_RIGHT, S_RGHT , KC_LEFT, KC_DOWN, KC_RIGHT, _______, MS_LEFT, MS_DOWN, MS_RGHT, MS_WHLD, _______,
+    _______, SC_LEFT, XXXXXXX, S_DOWN , KY_XLSL , SC_RGHT, S_LEFT , S_DOWN , S_RGHT  , _______, MS_BTN1, _______, _______, _______, _______,
+    _______, _______, _______, SC_DOWN, KC_TRNS , _______, SC_LEFT, SC_DOWN, SC_RGHT , _______, KC_TRNS, _______, _______, _______, _______),
 
     [_NM] = LAYOUT_ortho_5x15(
-    _______, KC_1   , KC_2   , KC_3   , KC_4   , KC_5   , KY_PLMN, KY_DIA , KY_DEG , KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , XXXXXXX,
+    _______, KC_1   , KC_2   , KC_3   , KC_4   , KC_5   , KY_PLMN, KY_DEG , KY_DIA , KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , XXXXXXX,
     _______, KC_GRV , KC_LT  , KC_GT  , KC_DQUO, KC_DOT , KC_AMPR, KC_ASTR, KC_LPRN, KC_AMPR, XXXXXXX, KC_LBRC, KC_RBRC, KC_PERC, XXXXXXX,
     _______, KC_EXLM, KC_MINS, KC_PLUS, KC_EQL , KC_HASH, KC_DLR , KC_PERC, KC_CIRC, KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN, KC_AT  , XXXXXXX,
     _______, KC_CIRC, KC_SLSH, KC_ASTR, KC_BSLS, KC_PERC, KC_EXLM, KC_AT  , KC_HASH, KC_TILD, KC_DLR , KC_LCBR, KC_RCBR, KC_QUES, XXXXXXX,
@@ -136,18 +133,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_LCTL, KC_K   , XXXXXXX, XXXXXXX, MS_BTN2, KC_SPC , KC_P0  , _______, _______, _______, _______, _______, _______, _______, _______),
 
     [_CL] = LAYOUT_ortho_5x15(
-    _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, CL_CLRS, CL_PLUS, CL_MINS, CL_DIV , CL_MULT, CL_INV , XXXXXXX, XXXXXXX, _______, _______,
-    TO(_QT), XXXXXXX, CL_SIN , CL_ASIN, CL_LN  , CL_CLRX, CL_7   , CL_8   , CL_9   , CL_POW , CL_PI  , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    XXXXXXX, XXXXXXX, CL_COS , CL_ACOS, CL_LOG , CL_XxY , CL_4   , CL_5   , CL_6   , CL_SQRT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    XXXXXXX, XXXXXXX, CL_TAN , CL_ATAN, CL_ABS , CL_INV , CL_1   , CL_2   , CL_3   , CL_SQ  , CL_XtY , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, CL_CLRS, CL_PLUS, CL_MINS, CL_DIV , CL_MULT, XXXXXXX , XXXXXXX, XXXXXXX, _______, _______,
+    XXXXXXX, CL_ACOS, CL_COS , XXXXXXX, CL_LN  , CL_CLRX, CL_7   , CL_8   , CL_9   , CL_POW , CL_PI  , XXXXXXX, XXXXXXX, XXXXXXX, TO(_QT),
+    XXXXXXX, CL_ASIN, CL_SIN , XXXXXXX, CL_LOG , CL_XxY , CL_4   , CL_5   , CL_6   , CL_SQRT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    XXXXXXX, CL_ATAN, CL_TAN , XXXXXXX, CL_ABS , CL_INV , CL_1   , CL_2   , CL_3   , CL_SQ  , CL_XtY , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, CL_BKS , CL_0   , CL_DOT , CL_ENT , CL_OUT , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX)
 
   };
 
-  
- 
- 
- 
+
  
   // Need to evaluate if COMBO is  useful
 #ifdef COMBO_ENABLE
@@ -163,8 +157,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #endif
 
 #ifdef KEY_OVERRIDE_ENABLE
-    const key_override_t space_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_SPC, KC_UNDS);
-    const key_override_t enter_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_PENT, KC_EQL);
+    const key_override_t space_key_override  = ko_make_basic(MOD_MASK_SHIFT, KC_SPC, KC_UNDS);
+    const key_override_t enter_key_override  = ko_make_basic(MOD_MASK_SHIFT, KC_PENT, KC_EQL);
     const key_override_t delete_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL);
 
     const key_override_t *key_overrides[] = {
@@ -185,7 +179,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         [_CM] =  { ENCODER_CCW_CW(KC_UP   , KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
         [_CN] =  { ENCODER_CCW_CW(KC_UP   , KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
         [_GM] =  { ENCODER_CCW_CW(KC_UP   , KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-        [_CL] = { ENCODER_CCW_CW(KC_UP   , KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  }
+        [_CL] =  { ENCODER_CCW_CW(KC_UP   , KC_DOWN),      ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  }
     };
 #endif
 
@@ -244,7 +238,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             return false;
     case SRCHSEL:  // Searches the current selection in a new tab.
         if (record->event.pressed) {
-            SEND_STRING(SS_LCTL("ct") SS_DELAY(100) SS_LCTL("v") SS_TAP(X_ENTER));
+            SEND_STRING(SS_LCTL("c") SS_DELAY(100) SS_LCTL("fv") SS_TAP(X_ENTER));
         }
             return false;
     case KY_DEG:  // types degree.
@@ -264,7 +258,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             return false;
     case KY_XLSL:  // Select range in XL.
         if (record->event.pressed) {
-            SEND_STRING(SS_LCTL(SS_TAP(X_UP) SS_TAP(X_LEFT)) SS_LSFT(SS_LCTL(SS_TAP(X_DOWN) SS_TAP(X_RIGHT))));
+            SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_DOWN) SS_TAP(X_RIGHT))));
         }
             return false;
     case JIGGLE:

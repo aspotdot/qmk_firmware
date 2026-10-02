@@ -19,21 +19,21 @@ static int8_t matrix_drops[DRAINS_COLS];
 static uint8_t matrix_speeds[DRAINS_COLS];
 static char matrix_col_chars[DRAINS_COLS];
 
-// From ref_files/myskeeb/oled.c
-static const char PROGMEM code_to_name[0xFF] = {
+// From /myskeeb/
+static const char PROGMEM code_to_name[] = {
 //   0    1    2    3    4    5    6    7    8    9    A    B    c    D    E    F
     182, ' ', ' ', ' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',  // 0x
     'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2',  // 1x
-    '3', '4', '5', '6', '7', '8', '9', '0',  20,  19,  17,  29,  22, '-', '=', '[',  // 2x
-    ']','\\', '#', ';','\'', '`', ',', '.', '/', 188, 149, 150, 151, 152, 153, 154,  // 3x
-    155, 156, 157, 158, 159, 181, 191, 190, ' ', ' ', 185, 183,  16, 186, 184,  26,  // 4x
-     27,  25,  24, 189, '/', '*', '-', '+', ' ', '1', '2', '3', '4', '5', '6', '7',  // 5x
-    '8', '9', '0', '.', ' ', 187, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',  // 6x
+    '3', '4', '5', '6', '7', '8', '9', '0',  84, 148, 187, 216, 150, '-', '=', '[',  // 2x
+    ']','\\', '#', ';','\'', '`', ',', '.', '/', 209,  17,  18,  19,  20,  21,  22,  // 3x
+     23,  24,  25,  26,  27,  28, 207, ' ', ' ', ' ', 127,  13, 189,  25,  84,  62,  // 4x
+     60,  76,  14, 223, '/', '*', '-', '+', ' ', '1', '2', '3', '4', '5', '6', '7',  // 5x
+    '8', '9', '0', '.', '/', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',  // 6x
     ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',  // 7x
     ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',  // 8x
     ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',  // 9x
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 214, 215, 216, 217, 218, 219, 220, 221,  // Ax
-    ' ', ' ', 213, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',  // Bx
+    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 212, 179, 179, 190, 191, 159, 158, ' ',  // Ax
+    ' ', ' ', 217, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',  // Bx
     ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',  // Cx
     ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',  // Dx
     'C', 'S', 'A', 'W', ' ', 'S', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',  // Ex
@@ -115,7 +115,7 @@ static void draw_matrix(void) {
 
 void trigger_matrix_rain(uint16_t keycode) {
     char charDrop = 0;
-    
+
     // Use code_to_name table safely
     if (keycode < 0xFF) {
         charDrop = pgm_read_byte(&code_to_name[keycode]);
@@ -137,17 +137,17 @@ static const char        top[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0};
 static const char       eyes[] = {0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0};
 static const char      mouth[] = {0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0};
 
-static const char      GLtop[] = {0x94, 0x95, 0x96, 0x97, 0x98, 0};
-static const char     GLeyes[] = {0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0};
-static const char    GLmouth[] = {0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0};
+static const char      GLtop[] = {0x85, 0x86, 0x87, 0x88, 0x89, 0};
+static const char     GLeyes[] = {0xa5, 0xa6, 0xa7, 0xa8, 0xa9, 0};
+static const char    GLmouth[] = {0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0};
 
 // icon options
-static const char mindblown[] = {0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0}; // top
-//static const char       cat[] = {0x80, 0x86, 0x87, 0x88, 0x84, 0}; // top
-static const char      pong[] = {0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0}; // eyes
-static const char   bigEyes[] = {0x8A, 0x20, 0x8C, 0x20, 0x8E, 0}; // eyes
-static const char mouthOpen[] = {0xc0, 0xb0, 0xb1, 0xb2, 0xc4, 0}; // mouth
-static const char   vampire[] = {0xc0, 0xd0, 0xd1, 0xd2, 0xc4, 0}; // mouth
+static const char mindblown[] = {0xca, 0xcb, 0xcc, 0xcd, 0xce, 0}; // top
+//static const char       cat[] = {0x80, 0x0a, 0x0b, 0x0c, 0x84, 0}; // top
+static const char      pong[] = {0x8F, 0x90, 0x91, 0x92, 0x93, 0}; // eyes
+static const char   bigEyes[] = {0x8F, 0x20, 0x91, 0x20, 0x93, 0}; // eyes
+static const char mouthOpen[] = {0xc0, 0xb5, 0xb6, 0xb7, 0xc4, 0}; // mouth
+static const char   vampire[] = {0xc0, 0xd5, 0xd6, 0xd7, 0xc4, 0}; // mouth
 
 // Forward declare custom layers
 enum layer_names_oled_ref {
@@ -215,7 +215,7 @@ static void drawscull(void) {
     }
     if (is_jiggler_enabled()) {
         oled_set_cursor(0,3);
-        oled_write_char(0xCA, false);
+        oled_write_char(0xD2, false);
     } else {
         oled_set_cursor(0,3);
         oled_write_char(' ', false);
@@ -282,36 +282,45 @@ void keyboard_post_init_user(void) {
 bool oled_task_user(void) {
     static  uint32_t saveTime = 3*60*1000; // 3 minutes
     static  uint32_t sleepTime = 15*60*1000; // 15 minutes
+    static bool last_was_calc = false;
+    const bool is_calc_layer = (get_highest_layer(layer_state) == _CL);
 
-     // Calculator Display Priority
-     if (get_highest_layer(layer_state) == _CL) {
-         oled_on();
-         char line_buf[22];
-         
-         // Top line (Stack 2)
-         oled_set_cursor(0, 0);
-         calc_get_line(3, line_buf);
-         oled_write(line_buf, false);
-         
-         // Stack 1
-         oled_set_cursor(0, 1);
-         calc_get_line(2, line_buf);
-         oled_write(line_buf, false);
-         
-         // Stack 0
-         oled_set_cursor(0, 2);
-         calc_get_line(1, line_buf);
-         oled_write(line_buf, false);
-         
-         // Input / Result
-         oled_set_cursor(0, 3);
-         calc_get_line(0, line_buf);
-         oled_write(line_buf, false);
-         
-         // Reset sleep timer while using calc
-         reset_oled_timer();
+    if (is_calc_layer) {
+        if (!last_was_calc) {
+            oled_clear();
+            last_was_calc = true;
+        }
 
-         return false;
+        oled_on();
+        char line_buf[22];
+
+        // Top line (Stack 2)
+        oled_set_cursor(0, 0);
+        calc_get_line(3, line_buf);
+        oled_write(line_buf, false);
+
+        // Stack 1
+        oled_set_cursor(0, 1);
+        calc_get_line(2, line_buf);
+        oled_write(line_buf, false);
+
+        // Stack 0
+        oled_set_cursor(0, 2);
+        calc_get_line(1, line_buf);
+        oled_write(line_buf, false);
+
+        // Input / Result
+        oled_set_cursor(0, 3);
+        calc_get_line(0, line_buf);
+        oled_write(line_buf, false);
+
+        reset_oled_timer();
+        return false;
+    }
+
+    if (last_was_calc) {
+        oled_clear();
+        last_was_calc = false;
     }
 
     if (is_jiggler_enabled() || timer_elapsed32(sleep_timer) < saveTime) {

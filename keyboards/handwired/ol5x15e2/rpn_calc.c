@@ -1,13 +1,13 @@
+// Ref  https://github.com/apoluekt/OpenRPNCalc)
+
+
 #include "rpn_calc.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-
-// --------------------------------------------------------------------------
-// Constants & Defines (Code Imported from OpenRPNCalc)
-// --------------------------------------------------------------------------
+#define M_PI 3.14159265358979323846
 
 #define MAX_STACK_SIZE 12
 #define MAX_MEMORY_SIZE 12
@@ -87,6 +87,7 @@
 
 #define OP_CONST_PI 0x4013
 #define OP_CONST_E 0x4014
+#define OP_ABS 0x101F
 
 // --------------------------------------------------------------------------
 // State Variables
@@ -120,12 +121,14 @@ t_input input;
 // Config state
 int trigmode = 0;     // 0-DEG, 1-RAD
 
-double trigconv = M_PI/180.0;
+double trigconv = 0.017453292519943295; // Default PI/180
+static void set_trigconv(void) {
+    trigconv = (trigmode == 0) ? M_PI / 180.0 : 1.0;
+}
+
 int context = CONTEXT_REAL;
-int precision = 4;         
+int precision = 4;
 int precision_uncert = 4;
-
-
 
 
 // --------------------------------------------------------------------------
@@ -134,19 +137,16 @@ int precision_uncert = 4;
 
 // CL_CLRS
 void clear_stack(void) {
-	stack[0] = 0.; stack2[0] = 0.;
-	lastx = 0.; lastx2 = 0.;
-	error_flag = 0; stack_size = 0;
-    // Ensure stack is clean for safety
-    for(int i=0; i<MAX_STACK_SIZE; i++) stack[i] = 0.0;
+    memset(stack, 0, sizeof(stack));
+    memset(stack2, 0, sizeof(stack2));
+    lastx = 0.0;
+    lastx2 = 0.0;
+    error_flag = 0;
+    stack_size = 0;
 }
 
 void clear_input(void) {
-	input.mpos = 0; input.sign = 0;
-	input.point = 0; input.started = 0;
-	input.replace_x = 0; input.expentry = 0;
-	memset(input.exponent, 0, 3);
-	input.expsign = 0;
+    memset(&input, 0, sizeof(input));
 }
 
 void clear_variables(void) {
@@ -175,30 +175,50 @@ void stack_drop(void) {
 			stack2[i] = stack2[i+1];
 		}
         stack[stack_size] = 0; // Clear visible residue
+        stack2[stack_size] = 0;
 	}
 }
 
 
 void stack_rotate_up(void) {
     if (stack_size < 2) return;
-	double tmp = stack[stack_size-1];
-	// double tmp2 = stack2[stack_size-1];
-	for (int i=stack_size-1; i>0; i--) {
-		stack[i] = stack[i-1];
-		// stack2[i] = stack2[i-1];
-	}
-	stack[0] = tmp;
-	// stack2[0] = tmp2;
+    double tmp = stack[stack_size-1];
+    double tmp2 = stack2[stack_size-1];
+    for (int i=stack_size-1; i>0; i--) {
+        stack[i] = stack[i-1];
+        stack2[i] = stack2[i-1];
+    }
+    stack[0] = tmp;
+    stack2[0] = tmp2;
 }
 
-void set_trigconv(void) {
-	if (trigmode == 0) trigconv = M_PI/180.;
-	else trigconv = 1.0;
+void stack_rotate_down(void) {
+    if (stack_size < 2) return;
+    double tmp = stack[0];
+    double tmp2 = stack2[0];
+    for (int i=0; i<stack_size-1; i++) {
+        stack[i] = stack[i+1];
+        stack2[i] = stack2[i+1];
+    }
+    stack[stack_size-1] = tmp;
+    stack2[stack_size-1] = tmp2;
 }
+
 
 // --------------------------------------------------------------------------
 // Input Parsing & Conversion
 // --------------------------------------------------------------------------
+
+// Helper to avoid pow() for integer parsing
+double my_pow10(int n) {
+    double r = 1.0;
+    if (n >= 0) {
+        for(int i=0; i<n; i++) r *= 10.0;
+    } else {
+        for(int i=0; i<-n; i++) r /= 10.0;
+    }
+    return r;
+}
 
 double convert_input(void) {
 	int i;
@@ -206,14 +226,16 @@ double convert_input(void) {
 	double shift = 1;
 
 	for (i=0; i<input.mpos; i++) {
-		number += input.mantissa[input.mpos-i-1]*shift;
+		number += (input.mantissa[input.mpos-i-1]) * shift;
 		shift *= 10;
 	}
 	int exponent = 100*input.exponent[2] + 10*input.exponent[1] + input.exponent[0];
 	if (input.expsign) exponent = -exponent;
 	if (input.point) exponent -= (input.mpos-input.point);
 
-	number *= pow(10, exponent);
+    if (exponent != 0) {
+	    number *= my_pow10(exponent);
+    }
 	if (input.sign) number = -number;
 
 	if (!isfinite(number)) {
@@ -245,7 +267,7 @@ void enter_number(char c) {
         stack[0] = 0; // Visual placeholder
 	}
 	if (input.expentry == 0) {
-		if (input.mpos < 10) { 
+		if (input.mpos < 10) {
 			input.mantissa[input.mpos++] = c;
 		}
 	} else {
@@ -272,7 +294,7 @@ void enter_backspace(void) {
     if (input.started) {
         if (input.mpos > 0) {
              input.mpos--;
-             if (input.mpos == 0) input.started = 0; 
+             if (input.mpos == 0) input.started = 0;
              // Logic simplified: just backspace last char
         } else {
             input.started = 0;
@@ -285,6 +307,9 @@ void enter_backspace(void) {
 void enter_enter(void) {
 	maybe_convert_input();
 	if (error_flag) return;
+    if (stack_size == 0) {
+        stack_size = 1;
+    }
 	input.replace_x = 1;
 	stack_push(stack[0], stack2[0]);
 }
@@ -292,21 +317,30 @@ void enter_enter(void) {
 void apply_op(uint16_t code) {
     maybe_convert_input();
     input.replace_x = 0;
-    
+
+    // Safety check for trigconv
+    if (trigconv == 0.0) set_trigconv();
+
     if (stack_size < 1) return;
     double x = stack[0];
     double y = (stack_size > 1) ? stack[1] : 0;
     double res = x;
     bool binary = false;
-    
+
     switch(code) {
         // Binary
         case OP_PLUS: res = y + x; binary = true; break;
         case OP_MINUS: res = y - x; binary = true; break;
         case OP_MULT: res = y * x; binary = true; break;
-        case OP_DIV: res = (x!=0) ? y / x : 0; binary = true; break; // Div0 check needed 
+        case OP_DIV:
+            if (x == 0.0) {
+                error_flag = 1;
+                stack[0] = 0.0;
+                return;
+            }
+            res = y / x; binary = true; break;
         case OP_POW: res = pow(y, x); binary = true; break;
-        
+
         // Unary
         case OP_SQRT: res = sqrt(x); break;
         case OP_SQR: res = x*x; break;
@@ -315,17 +349,35 @@ void apply_op(uint16_t code) {
         case OP_TAN: res = tan(trigconv*x); break;
         case OP_LN: res = log(x); break;
         case OP_LG: res = log10(x); break;
-        case OP_INV: res = (x!=0) ? 1.0/x : 0.0; break;
-        
+        case OP_INV:
+            if (x == 0.0) {
+                error_flag = 1;
+                stack[0] = 0.0;
+                return;
+            }
+            res = 1.0 / x; break;
+        case OP_ASIN: res = asin(x); if (!trigmode) res /= trigconv; break;
+        case OP_ACOS: res = acos(x); if (!trigmode) res /= trigconv; break;
+        case OP_ATAN: res = atan(x); if (!trigmode) res /= trigconv; break;
+        case OP_ABS: res = fabs(x); break;
+        case OP_CONST_PI:
+            stack_push(M_PI, 0);
+            return;
+
         // Stack
-        case OP_DROP: stack_drop(); return; 
-        case OP_SWAP: 
+        case OP_DROP: stack_drop(); return;
+        case OP_SWAP:
             if (stack_size >= 2) {
-                stack[0] = y; stack[1] = x;
+                double tmp = stack[0];
+                stack[0] = stack[1];
+                stack[1] = tmp;
             }
             return;
+        case OP_CLEAR_STACK:
+            clear_stack();
+            return;
     }
-    
+
     if (binary) stack_drop();
     stack[0] = res;
     if (!isfinite(stack[0])) error_flag = 1;
@@ -343,9 +395,10 @@ void calc_init(void) {
 }
 
 
+
 bool calc_handle_key(uint16_t keycode) {
     // Map QMK Keycodes to Internal Functions
-    
+
     // Digits
     if (keycode >= KC_1 && keycode <= KC_0) {
         enter_number((keycode == KC_0) ? 0 : (keycode - KC_1 + 1));
@@ -355,33 +408,63 @@ bool calc_handle_key(uint16_t keycode) {
         enter_number((keycode == KC_P0) ? 0 : (keycode - KC_P1 + 1));
         return true;
     }
-    
+
     switch (keycode) {
-        case KC_DOT: 
+        case KC_DOT:
         case KC_PDOT:
             enter_decpoint(); return true;
-        case KC_BSPC: 
+        case KC_BSPC:
         case CL_BKS:
             enter_backspace(); return true;
-        case CL_ENT: 
+        case CL_ENT:
             enter_enter(); return true;
-            
+
         case CL_PLUS:
-        case KC_PLUS: 
+        case KC_PLUS:
         case KC_PPLS: apply_op(OP_PLUS); return true;
         case CL_MINS:
-        case KC_MINS: 
+        case KC_MINS:
         case KC_PMNS: apply_op(OP_MINUS); return true;
         case CL_MULT:
-        case KC_ASTR: 
+        case KC_ASTR:
         case KC_PAST: apply_op(OP_MULT); return true;
         case CL_DIV:
-        case KC_SLSH: 
+        case KC_SLSH:
         case KC_PSLS: apply_op(OP_DIV); return true;
         case CL_POW:
+        case CL_XtY:
         case KC_CIRC: apply_op(OP_POW); return true;
-        
-        default: return false; 
+
+        // Extended Functions
+        case CL_CLRS: apply_op(OP_CLEAR_STACK); return true;
+        case CL_XxY: apply_op(OP_SWAP); return true;
+        case CL_CLRX:
+        case CL_CE:
+            if (input.started) {
+                 clear_input();
+                 stack[0] = 0;
+            } else {
+                 stack[0] = 0;
+            }
+            return true;
+
+        case CL_INV: apply_op(OP_INV); return true;
+        case CL_SQ:  apply_op(OP_SQR); return true;
+        case CL_SQRT: apply_op(OP_SQRT); return true;
+        case CL_ABS: apply_op(OP_ABS); return true;
+
+        case CL_SIN: apply_op(OP_SIN); return true;
+        case CL_COS: apply_op(OP_COS); return true;
+        case CL_TAN: apply_op(OP_TAN); return true;
+        case CL_ASIN: apply_op(OP_ASIN); return true;
+        case CL_ACOS: apply_op(OP_ACOS); return true;
+        case CL_ATAN: apply_op(OP_ATAN); return true;
+
+        case CL_LN: apply_op(OP_LN); return true;
+        case CL_LOG: apply_op(OP_LG); return true;
+        case CL_PI: apply_op(OP_CONST_PI); return true;
+
+        default: return false;
     }
 }
 
@@ -390,28 +473,105 @@ void calc_push(double val) {
     stack_push(val, 0);
 }
 
+static void format_numeric_value(double num, char *buffer, size_t buffer_size) {
+    if (buffer == NULL || buffer_size == 0) return;
+
+    if (!isfinite(num)) {
+        snprintf(buffer, buffer_size, "err");
+        return;
+    }
+
+    if (num == 0.0) {
+        snprintf(buffer, buffer_size, "0");
+        return;
+    }
+
+    char formatted[32];
+    size_t pos = 0;
+    if (num < 0.0) {
+        formatted[pos++] = '-';
+        num = -num;
+    }
+
+    int exponent = 0;
+    while (num >= 10.0) {
+        num /= 10.0;
+        exponent++;
+    }
+    while (num < 1.0) {
+        num *= 10.0;
+        exponent--;
+    }
+
+    unsigned int mantissa = (unsigned int)(num * 100000.0 + 0.5);
+    if (mantissa >= 1000000U) {
+        mantissa /= 10U;
+        exponent++;
+    }
+
+    char digits[7];
+    snprintf(digits, sizeof(digits), "%06u", mantissa);
+
+    if (exponent >= 6 || exponent < -4) {
+        formatted[pos++] = digits[0];
+        size_t last_digit = 6;
+        while (last_digit > 1 && digits[last_digit - 1] == '0') {
+            last_digit--;
+        }
+        if (last_digit > 1) {
+            formatted[pos++] = '.';
+            memcpy(&formatted[pos], &digits[1], last_digit - 1);
+            pos += last_digit - 1;
+        }
+        int exponent_length = snprintf(&formatted[pos], sizeof(formatted) - pos, "e%+d", exponent);
+        if (exponent_length < 0 || (size_t)exponent_length >= sizeof(formatted) - pos) {
+            snprintf(buffer, buffer_size, "err");
+            return;
+        }
+        pos += (size_t)exponent_length;
+    } else if (exponent < 0) {
+        formatted[pos++] = '0';
+        formatted[pos++] = '.';
+        for (int i = 0; i < -exponent - 1; i++) {
+            formatted[pos++] = '0';
+        }
+        memcpy(&formatted[pos], digits, sizeof(digits) - 1);
+        pos += sizeof(digits) - 1;
+        while (formatted[pos - 1] == '0') {
+            pos--;
+        }
+    } else {
+        int integer_digits = exponent + 1;
+        int digits_to_copy = integer_digits < 6 ? integer_digits : 6;
+        memcpy(&formatted[pos], digits, digits_to_copy);
+        pos += (size_t)digits_to_copy;
+        while (integer_digits > 6) {
+            formatted[pos++] = '0';
+            integer_digits--;
+        }
+
+        if (digits_to_copy < 6) {
+            formatted[pos++] = '.';
+            memcpy(&formatted[pos], &digits[digits_to_copy], 6 - digits_to_copy);
+            pos += (size_t)(6 - digits_to_copy);
+            while (formatted[pos - 1] == '0') {
+                pos--;
+            }
+            if (formatted[pos - 1] == '.') {
+                pos--;
+            }
+        }
+    }
+
+    formatted[pos] = '\0';
+    snprintf(buffer, buffer_size, "%s", formatted);
+}
+
 void calc_output_result(void) {
     maybe_convert_input();
     if (stack_size > 0) {
         char buf[32];
-        // Simple float output manual conversion (printf float not supported)
-        int i_part = (int)stack[0];
-        int f_part = (int)(fabs(stack[0] - i_part) * 10000 + 0.5); // +0.5 for rounding
-        snprintf(buf, sizeof(buf), "%s%d.%04d", (stack[0]<0 && i_part==0)?"-":"", i_part, f_part);
-        
-        // Remove trailing zeros
-        int len = strlen(buf);
-        while (len > 0) {
-            if (buf[len-1] == '0') {
-                buf[len-1] = '\0';
-                len--;
-            } else if (buf[len-1] == '.') {
-                buf[len-1] = '\0'; // Remove the decimal point itself if no decimals remain
-                break;
-            } else {
-                break;
-            }
-        }
+        format_numeric_value(stack[0], buf, sizeof(buf));
         send_string(buf);
     }
 }
@@ -422,25 +582,7 @@ void calc_output_result(void) {
 // --------------------------------------------------------------------------
 
 void format_number(double num, char *buffer) {
-    int i_part = (int)num;
-    int f_part = (int)(fabs(num - i_part) * 10000 + 0.5); 
-    char temp[32];
-    snprintf(temp, sizeof(temp), "%s%d.%04d", (num<0 && i_part==0)?"-":"", i_part, f_part);
-    
-    // Trim zeros
-    int len = strlen(temp);
-    while (len > 0) {
-        if (temp[len-1] == '0') {
-            temp[len-1] = '\0';
-            len--;
-        } else if (temp[len-1] == '.') {
-            temp[len-1] = '\0';
-            break;
-        } else {
-            break;
-        }
-    }
-    strncpy(buffer, temp, 21);
+    format_numeric_value(num, buffer, 22);
 }
 
 void calc_get_line(uint8_t line, char *buffer) {
@@ -448,40 +590,59 @@ void calc_get_line(uint8_t line, char *buffer) {
     // Line 1: Y
     // Line 2: Z
     // Line 3: T
-    
+
     char temp[22];
     if (line == 0) {
         if (input.started) {
             // Render Input Buffer
             int p = 0;
-            if(input.sign) temp[p++] = '-';
-            for (int i=0; i<input.mpos; i++) {
+            if (input.sign) temp[p++] = '-';
+            for (int i = 0; i < input.mpos; i++) {
                 temp[p++] = input.mantissa[i] + '0';
-                if (input.point > 0 && (i+1) == input.point) temp[p++] = '.';
+                if (input.point > 0 && (i + 1) == input.point) temp[p++] = '.';
             }
-            if (input.point == 0) temp[p++] = '_'; // Cursor
+
+            if (input.exponent[0] || input.exponent[1] || input.exponent[2] || input.expentry) {
+                temp[p++] = 'E';
+                if (input.expsign) temp[p++] = '-';
+                else temp[p++] = '+';
+
+                int exponent_digits = 0;
+                for (int i = 0; i < 3; i++) {
+                    char digit = input.exponent[i];
+                    if (digit != 0 || exponent_digits > 0 || i == 2) {
+                        temp[p++] = digit + '0';
+                        exponent_digits++;
+                    }
+                }
+            }
+
+            if (input.point == 0 && input.mpos == 0) {
+                temp[p++] = '_';
+            }
             temp[p] = '\0';
         } else {
             // Render X
             if (stack_size > 0) {
-                char nb[20];
+                char nb[22];
                 format_number(stack[0], nb);
-                snprintf(temp, 22, "X: %s", nb);
+                snprintf(temp, sizeof(temp), "x: %s", nb);
             } else {
-                strcpy(temp, "X: 0");
+                strcpy(temp, "x: 0");
             }
         }
     } else {
-        // Stack Lines
+        // Stack Lines: 1->Y, 2->Z, 3->T. These are fixed RPN registers;
+        // display their contents independently of the current stack depth.
         int idx = line; // 1->Y, 2->Z, 3->T
-        // Ensure we always show values, even if stack is empty (default 0)
-        double val = (idx < MAX_STACK_SIZE) ? stack[idx] : 0;
-        char nb[20];
+        double val = (idx < MAX_STACK_SIZE) ? stack[idx] : 0.0;
+
+        char nb[22];
         format_number(val, nb);
-        char reg = (idx==1)?'Y':(idx==2)?'Z':(idx==3)?'T':('0'+idx);
-        snprintf(temp, 22, "%c: %s", reg, nb);
+        char reg = (idx == 1) ? 'y' : (idx == 2) ? 'z' : (idx == 3) ? 't' : ('0' + idx);
+        snprintf(temp, sizeof(temp), "%c: %s", reg, nb);
     }
-    
+
     // Pad with spaces to clear line (OLED width ~21 chars)
     int len = strlen(temp);
     memset(buffer, ' ', 21);

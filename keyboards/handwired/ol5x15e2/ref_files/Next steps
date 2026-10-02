@@ -1,0 +1,46 @@
+Build out calculator funtions
+
+
+CL_CLRS: clear stack
+CL_CLRX: clear x register
+CL_XxY: swap x and y registers
+CL_BKS: backspace operation
+
+CL_PLUS: addition operation
+CL_MINS: subtraction operation
+CL_DIV: division operation
+CL_MULT: multiplication operation
+CL_INV: inverse operation
+
+CL_SIN: sin trigonometric function
+CL_ASIN: arcsin inverse trigonometric function
+CL_COS: cosine trigonometric function
+CL_ACOS: arccosine inverse trigonometric function
+CL_TAN: tangent trigonometric function
+CL_ATAN: arctangent inverse trigonometric function
+CL_LN: natural logarithm function
+CL_POW: power function
+CL_PI: pi constant
+CL_EF: e constant
+CL_LOG: base 10 logarithm function
+CL_SQRT: square root function
+CL_ABS: absolute value function
+CL_INV: inverse function
+CL_SQ: square function
+CL_XtY: x to the power of y function
+
+CL_1   : push 1 to stack
+CL_2   : push 2 to stack
+CL_3   : push 3 to stack
+CL_4   : push 4 to stack
+CL_5   : push 5 to stack
+CL_6   : push 6 to stack
+CL_7   : push 7 to stack
+CL_8   : push 8 to stack
+CL_9   : push 9 to stack
+CL_0   : push 0 to stack
+
+CL_DOT : decimal point operation
+CL_ENT : enter operation
+CL_OUT : output operation
+
